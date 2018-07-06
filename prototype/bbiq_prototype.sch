@@ -78,6 +78,8 @@
 <layer number="111" name="LPC17xx" color="7" fill="1" visible="no" active="yes"/>
 <layer number="112" name="tSilk" color="7" fill="1" visible="no" active="yes"/>
 <layer number="113" name="ReferenceLS" color="7" fill="1" visible="no" active="no"/>
+<layer number="114" name="Badge_Outline" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="115" name="ReferenceISLANDS" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="116" name="Patch_BOT" color="9" fill="4" visible="no" active="yes"/>
 <layer number="118" name="Rect_Pads" color="7" fill="1" visible="no" active="no"/>
 <layer number="121" name="_tsilk" color="7" fill="1" visible="no" active="yes"/>
@@ -5922,6 +5924,168 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </deviceset>
 </devicesets>
 </library>
+<library name="SparkFun-Sensors">
+<description>&lt;h3&gt;SparkFun Sensors&lt;/h3&gt;
+This library contains sensors- accelerometers, gyros, compasses, magnetometers, light sensors, imagers, temp sensors, etc.
+&lt;br&gt;
+&lt;br&gt;
+We've spent an enormous amount of time creating and checking these footprints and parts, but it is &lt;b&gt; the end user's responsibility&lt;/b&gt; to ensure correctness and suitablity for a given componet or application.
+&lt;br&gt;
+&lt;br&gt;If you enjoy using this library, please buy one of our products at &lt;a href=" www.sparkfun.com"&gt;SparkFun.com&lt;/a&gt;.
+&lt;br&gt;
+&lt;br&gt;
+&lt;b&gt;Licensing:&lt;/b&gt; Creative Commons ShareAlike 4.0 International - https://creativecommons.org/licenses/by-sa/4.0/
+&lt;br&gt;
+&lt;br&gt;
+You are welcome to use this library for commercial purposes. For attribution, we ask that when you begin to sell your device using our footprint, you email us with a link to the product being sold. We want bragging rights that we helped (in a very small part) to create your 8th world wonder. We would like the opportunity to feature your device on our homepage.</description>
+<packages>
+<package name="TO-92">
+<description>&lt;h3&gt;TO-92 3-Pin PTH Footprint&lt;/h3&gt;
+&lt;p&gt;&lt;a href="http://cdn.sparkfun.com/datasheets/Sensors/Temp/TMP35_36_37.pdf"&gt;Datasheet&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Specifications:
+&lt;ul&gt;
+&lt;li&gt;Pin Count: 3&lt;/li&gt;
+&lt;li&gt;Dimensions: 3.68 x 4.83 x 4.83 mm&lt;/li&gt;
+&lt;li&gt;Pitch: 2.54 mm&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Devices Using:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;TMP36&lt;/li&gt;
+&lt;/ul&gt;</description>
+<wire x1="-2.0946" y1="-1.651" x2="-0.7863" y2="2.5485" width="0.2032" layer="21" curve="-111.098957" cap="flat"/>
+<wire x1="0.7863" y1="2.5484" x2="2.0945" y2="-1.651" width="0.2032" layer="21" curve="-111.09954" cap="flat"/>
+<wire x1="-2.0945" y1="-1.651" x2="2.0945" y2="-1.651" width="0.2032" layer="21"/>
+<wire x1="-2.6549" y1="-0.254" x2="-2.2537" y2="-0.254" width="0.2032" layer="21"/>
+<wire x1="-0.2863" y1="-0.254" x2="0.2863" y2="-0.254" width="0.2032" layer="21"/>
+<wire x1="2.2537" y1="-0.254" x2="2.6549" y2="-0.254" width="0.2032" layer="21"/>
+<pad name="3" x="1.27" y="0" drill="0.8128" diameter="1.8796"/>
+<pad name="2" x="0" y="1.905" drill="0.8128" diameter="1.8796"/>
+<pad name="1" x="-1.27" y="0" drill="0.8128" diameter="1.8796"/>
+<text x="0" y="-1.778" size="0.6096" layer="25" font="vector" ratio="20" rot="R180" align="bottom-center">&gt;NAME</text>
+<text x="0" y="3.048" size="0.6096" layer="27" font="vector" ratio="20" rot="R180" align="top-center">&gt;VALUE</text>
+</package>
+<package name="TO-92-KIT">
+<description>&lt;h3&gt;TO-92 3-Pin PTH Footprint - KIT Version&lt;/h3&gt;
+&lt;p&gt;&lt;b&gt;Warning:&lt;/b&gt; This is the KIT version of this package. This package has a smaller diameter top stop mask, which doesn't cover the diameter of the pad. This means only the bottom side of the pads' copper will be exposed. You'll only be able to solder to the bottom side.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://cdn.sparkfun.com/datasheets/Sensors/Temp/TMP35_36_37.pdf"&gt;Datasheet&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Specifications:
+&lt;ul&gt;
+&lt;li&gt;Pin Count: 3&lt;/li&gt;
+&lt;li&gt;Dimensions: 3.68 x 4.83 x 4.83 mm&lt;/li&gt;
+&lt;li&gt;Pitch: 2.54 mm&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Devices Using:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;TMP36&lt;/li&gt;
+&lt;/ul&gt;</description>
+<wire x1="-2.0946" y1="-1.651" x2="-0.7863" y2="2.5485" width="0.2032" layer="21" curve="-111.098957" cap="flat"/>
+<wire x1="0.7863" y1="2.5484" x2="2.0945" y2="-1.651" width="0.2032" layer="21" curve="-111.09954" cap="flat"/>
+<wire x1="-2.0945" y1="-1.651" x2="2.0945" y2="-1.651" width="0.2032" layer="21"/>
+<wire x1="-2.6549" y1="-0.254" x2="-2.2537" y2="-0.254" width="0.2032" layer="21"/>
+<wire x1="-0.2863" y1="-0.254" x2="0.2863" y2="-0.254" width="0.2032" layer="21"/>
+<wire x1="2.2537" y1="-0.254" x2="2.6549" y2="-0.254" width="0.2032" layer="21"/>
+<pad name="3" x="1.27" y="0" drill="0.9" diameter="1.8796" stop="no"/>
+<pad name="2" x="0" y="1.905" drill="0.9" diameter="1.8796" stop="no"/>
+<pad name="1" x="-1.27" y="0" drill="0.9" diameter="1.8796" stop="no"/>
+<polygon width="0.127" layer="30">
+<vertex x="-1.2675" y="-0.9525" curve="-90"/>
+<vertex x="-2.2224" y="-0.0228" curve="-90.011749"/>
+<vertex x="-1.27" y="0.9526" curve="-90"/>
+<vertex x="-0.32" y="-0.0254" curve="-90.024193"/>
+</polygon>
+<polygon width="0.127" layer="29">
+<vertex x="-1.27" y="-0.4445" curve="-90.012891"/>
+<vertex x="-1.7145" y="-0.0203" curve="-90"/>
+<vertex x="-1.27" y="0.447" curve="-90"/>
+<vertex x="-0.8281" y="-0.0101" curve="-90.012967"/>
+</polygon>
+<polygon width="0.127" layer="30">
+<vertex x="1.2725" y="-0.9525" curve="-90"/>
+<vertex x="0.3176" y="-0.0228" curve="-90.011749"/>
+<vertex x="1.27" y="0.9526" curve="-90"/>
+<vertex x="2.22" y="-0.0254" curve="-90.024193"/>
+</polygon>
+<polygon width="0.127" layer="29">
+<vertex x="1.27" y="-0.4445" curve="-90.012891"/>
+<vertex x="0.8255" y="-0.0203" curve="-90"/>
+<vertex x="1.27" y="0.447" curve="-90"/>
+<vertex x="1.7119" y="-0.0101" curve="-90.012967"/>
+</polygon>
+<polygon width="0.127" layer="30">
+<vertex x="0.0025" y="0.9525" curve="-90"/>
+<vertex x="-0.9524" y="1.8822" curve="-90.011749"/>
+<vertex x="0" y="2.8576" curve="-90"/>
+<vertex x="0.95" y="1.8796" curve="-90.024193"/>
+</polygon>
+<polygon width="0.127" layer="29">
+<vertex x="0" y="1.4605" curve="-90.012891"/>
+<vertex x="-0.4445" y="1.8847" curve="-90"/>
+<vertex x="0" y="2.352" curve="-90"/>
+<vertex x="0.4419" y="1.8949" curve="-90.012967"/>
+</polygon>
+<text x="0" y="-1.778" size="0.6096" layer="25" font="vector" ratio="20" rot="R180" align="bottom-center">&gt;NAME</text>
+<text x="0" y="2.921" size="0.6096" layer="27" font="vector" ratio="20" rot="R180" align="top-center">&gt;VALUE</text>
+</package>
+</packages>
+<symbols>
+<symbol name="TMP36">
+<description>&lt;h3&gt;TMP36 Precision Analog &amp;deg;C Temperature Sensor&lt;/h3&gt;
+&lt;p&gt;The TMP36 is a low voltage, precision centigrade temperature sensor. It provides a voltage output that is linearly proportional to the Celsius temperature. It also doesn’t require any external calibration to provide typical accuracies of ±1°C at +25°C and ±2°C over the −40°C to +125°C temperature range. We like it because it’s so easy to use: Just give the device a ground and 2.7 to 5.5 VDC and read the voltage on the Vout pin. The output voltage can be converted to temperature easily using the scale factor of 10 mV/°C.&lt;/p&gt;</description>
+<wire x1="-5.08" y1="5.08" x2="5.08" y2="5.08" width="0.254" layer="94"/>
+<wire x1="5.08" y1="5.08" x2="5.08" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="5.08" y1="-5.08" x2="-5.08" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="-5.08" y1="-5.08" x2="-5.08" y2="5.08" width="0.254" layer="94"/>
+<pin name="VCC" x="-7.62" y="2.54" length="short"/>
+<pin name="GND" x="-7.62" y="-2.54" length="short"/>
+<pin name="VOUT" x="7.62" y="0" length="short" rot="R180"/>
+<text x="-5.08" y="5.334" size="1.778" layer="95" font="vector">&gt;Name</text>
+<text x="-5.08" y="-5.334" size="1.778" layer="96" font="vector" align="top-left">&gt;Value</text>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="TMP36" prefix="U" uservalue="yes">
+<description>&lt;h3&gt;TMP36 Precision Analog &amp;deg;C Temperature Sensor&lt;/h3&gt;
+&lt;p&gt;The TMP36 is a low voltage, precision centigrade temperature sensor. It provides a voltage output that is linearly proportional to the Celsius temperature. It also doesn’t require any external calibration to provide typical accuracies of ±1°C at +25°C and ±2°C over the −40°C to +125°C temperature range. We like it because it’s so easy to use: Just give the device a ground and 2.7 to 5.5 VDC and read the voltage on the Vout pin. The output voltage can be converted to temperature easily using the scale factor of 10 mV/°C.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://cdn.sparkfun.com/datasheets/Sensors/Temp/TMP35_36_37.pdf"&gt;Datasheet&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;SparkFun Products&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.sparkfun.com/products/10988"&gt;Temperature Sensor - TMP36&lt;/a&gt; (SEN-10988)&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.sparkfun.com/products/11649"&gt;SparkFun Danger Shield&lt;/a&gt; (DEV-11649)&lt;/li&gt;
+&lt;/ul&gt;</description>
+<gates>
+<gate name="G$1" symbol="TMP36" x="0" y="0"/>
+</gates>
+<devices>
+<device name="GT9" package="TO-92">
+<connects>
+<connect gate="G$1" pin="GND" pad="3"/>
+<connect gate="G$1" pin="VCC" pad="1"/>
+<connect gate="G$1" pin="VOUT" pad="2"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="PROD_ID" value="IC-09880"/>
+<attribute name="SF_ID" value="SEN-10988"/>
+</technology>
+</technologies>
+</device>
+<device name="GT9-KIT" package="TO-92-KIT">
+<connects>
+<connect gate="G$1" pin="GND" pad="3"/>
+<connect gate="G$1" pin="VCC" pad="1"/>
+<connect gate="G$1" pin="VOUT" pad="2"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="PROD_ID" value="IC-09880"/>
+<attribute name="SF_ID" value="SEN-10988"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -5957,6 +6121,9 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R6" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-US_" device="0207/10" package3d_urn="urn:adsk.eagle:package:23491/1" value="470"/>
 <part name="R7" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-US_" device="0207/10" package3d_urn="urn:adsk.eagle:package:23491/1" value="220"/>
+<part name="U2" library="SparkFun-Sensors" deviceset="TMP36" device="GT9"/>
+<part name="P+3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
+<part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -5964,17 +6131,17 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </plain>
 <instances>
 <instance part="U1" gate="G$1" x="71.12" y="25.4" rot="R270"/>
-<instance part="PROBE_1" gate="G$1" x="-25.4" y="55.88"/>
-<instance part="PROBE_2" gate="G$1" x="-25.4" y="38.1"/>
-<instance part="PROBE_3" gate="G$1" x="-25.4" y="20.32"/>
-<instance part="PROBE_4" gate="G$1" x="-25.4" y="2.54"/>
+<instance part="PROBE_1" gate="G$1" x="-22.86" y="71.12"/>
+<instance part="PROBE_2" gate="G$1" x="-22.86" y="53.34"/>
+<instance part="PROBE_3" gate="G$1" x="-22.86" y="35.56"/>
+<instance part="PROBE_4" gate="G$1" x="-22.86" y="17.78"/>
 <instance part="GND1" gate="1" x="33.02" y="20.32"/>
 <instance part="GND2" gate="1" x="121.92" y="40.64"/>
-<instance part="R1" gate="G$1" x="-5.08" y="53.34"/>
-<instance part="R2" gate="G$1" x="-5.08" y="35.56"/>
-<instance part="R3" gate="G$1" x="-5.08" y="17.78"/>
-<instance part="R4" gate="G$1" x="-5.08" y="0"/>
-<instance part="GND3" gate="1" x="7.62" y="-12.7"/>
+<instance part="R1" gate="G$1" x="-2.54" y="68.58"/>
+<instance part="R2" gate="G$1" x="-2.54" y="50.8"/>
+<instance part="R3" gate="G$1" x="-2.54" y="33.02"/>
+<instance part="R4" gate="G$1" x="-2.54" y="15.24"/>
+<instance part="GND3" gate="1" x="10.16" y="2.54"/>
 <instance part="BUTTON_1" gate="G$1" x="157.48" y="22.86"/>
 <instance part="BUTTON_2" gate="G$1" x="157.48" y="27.94"/>
 <instance part="BUTTON_3" gate="G$1" x="157.48" y="33.02"/>
@@ -5988,6 +6155,9 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="GND6" gate="1" x="109.22" y="93.98"/>
 <instance part="R6" gate="G$1" x="129.54" y="-10.16" rot="R90"/>
 <instance part="R7" gate="G$1" x="157.48" y="88.9" rot="R90"/>
+<instance part="U2" gate="G$1" x="-5.08" y="-12.7"/>
+<instance part="P+3" gate="1" x="-15.24" y="-5.08"/>
+<instance part="GND7" gate="1" x="-15.24" y="-20.32"/>
 </instances>
 <busses>
 </busses>
@@ -6000,13 +6170,13 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </segment>
 <segment>
 <pinref part="PROBE_1" gate="G$1" pin="2"/>
-<wire x1="-15.24" y1="53.34" x2="-12.7" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="68.58" x2="-10.16" y2="68.58" width="0.1524" layer="91"/>
 <pinref part="R1" gate="G$1" pin="1"/>
-<wire x1="-12.7" y1="53.34" x2="-10.16" y2="53.34" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="53.34" x2="-12.7" y2="48.26" width="0.1524" layer="91"/>
-<junction x="-12.7" y="53.34"/>
-<wire x1="-12.7" y1="48.26" x2="2.54" y2="48.26" width="0.1524" layer="91"/>
-<label x="-12.7" y="45.72" size="1.778" layer="95"/>
+<wire x1="-10.16" y1="68.58" x2="-7.62" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="-10.16" y1="68.58" x2="-10.16" y2="63.5" width="0.1524" layer="91"/>
+<junction x="-10.16" y="68.58"/>
+<wire x1="-10.16" y1="63.5" x2="5.08" y2="63.5" width="0.1524" layer="91"/>
+<label x="-10.16" y="60.96" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="TEMP_PROBE_2" class="0">
@@ -6017,13 +6187,13 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </segment>
 <segment>
 <pinref part="PROBE_2" gate="G$1" pin="2"/>
-<wire x1="-15.24" y1="35.56" x2="-12.7" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="50.8" x2="-10.16" y2="50.8" width="0.1524" layer="91"/>
 <pinref part="R2" gate="G$1" pin="1"/>
-<wire x1="-12.7" y1="35.56" x2="-10.16" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="35.56" x2="-12.7" y2="30.48" width="0.1524" layer="91"/>
-<junction x="-12.7" y="35.56"/>
-<wire x1="-12.7" y1="30.48" x2="2.54" y2="30.48" width="0.1524" layer="91"/>
-<label x="-12.7" y="27.94" size="1.778" layer="95"/>
+<wire x1="-10.16" y1="50.8" x2="-7.62" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="-10.16" y1="50.8" x2="-10.16" y2="45.72" width="0.1524" layer="91"/>
+<junction x="-10.16" y="50.8"/>
+<wire x1="-10.16" y1="45.72" x2="5.08" y2="45.72" width="0.1524" layer="91"/>
+<label x="-10.16" y="43.18" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="TEMP_PROBE_3" class="0">
@@ -6034,13 +6204,13 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </segment>
 <segment>
 <pinref part="PROBE_3" gate="G$1" pin="2"/>
-<wire x1="-15.24" y1="17.78" x2="-12.7" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="33.02" x2="-10.16" y2="33.02" width="0.1524" layer="91"/>
 <pinref part="R3" gate="G$1" pin="1"/>
-<wire x1="-12.7" y1="17.78" x2="-10.16" y2="17.78" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="17.78" x2="-12.7" y2="12.7" width="0.1524" layer="91"/>
-<junction x="-12.7" y="17.78"/>
-<wire x1="-12.7" y1="12.7" x2="2.54" y2="12.7" width="0.1524" layer="91"/>
-<label x="-12.7" y="10.16" size="1.778" layer="95"/>
+<wire x1="-10.16" y1="33.02" x2="-7.62" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="-10.16" y1="33.02" x2="-10.16" y2="27.94" width="0.1524" layer="91"/>
+<junction x="-10.16" y="33.02"/>
+<wire x1="-10.16" y1="27.94" x2="5.08" y2="27.94" width="0.1524" layer="91"/>
+<label x="-10.16" y="25.4" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="TEMP_PROBE_4" class="0">
@@ -6051,13 +6221,13 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </segment>
 <segment>
 <pinref part="PROBE_4" gate="G$1" pin="2"/>
-<wire x1="-15.24" y1="0" x2="-12.7" y2="0" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="15.24" x2="-10.16" y2="15.24" width="0.1524" layer="91"/>
 <pinref part="R4" gate="G$1" pin="1"/>
-<wire x1="-12.7" y1="0" x2="-10.16" y2="0" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="0" x2="-12.7" y2="-5.08" width="0.1524" layer="91"/>
-<junction x="-12.7" y="0"/>
-<wire x1="-12.7" y1="-5.08" x2="2.54" y2="-5.08" width="0.1524" layer="91"/>
-<label x="-12.7" y="-7.62" size="1.778" layer="95"/>
+<wire x1="-10.16" y1="15.24" x2="-7.62" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="-10.16" y1="15.24" x2="-10.16" y2="10.16" width="0.1524" layer="91"/>
+<junction x="-10.16" y="15.24"/>
+<wire x1="-10.16" y1="10.16" x2="5.08" y2="10.16" width="0.1524" layer="91"/>
+<label x="-10.16" y="7.62" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="TEMP_INTERNAL" class="0">
@@ -6065,6 +6235,11 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="U1" gate="G$1" pin="A4/SDA"/>
 <wire x1="40.64" y1="5.08" x2="25.4" y2="5.08" width="0.1524" layer="91"/>
 <label x="25.4" y="5.08" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U2" gate="G$1" pin="VOUT"/>
+<wire x1="2.54" y1="-12.7" x2="17.78" y2="-12.7" width="0.1524" layer="91"/>
+<label x="2.54" y="-12.7" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="BUZZER" class="0">
@@ -6191,21 +6366,21 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <net name="PROBE_POWER" class="0">
 <segment>
 <pinref part="R4" gate="G$1" pin="2"/>
-<wire x1="0" y1="0" x2="12.7" y2="0" width="0.1524" layer="91"/>
-<wire x1="12.7" y1="0" x2="12.7" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="2.54" y1="15.24" x2="15.24" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="15.24" y1="15.24" x2="15.24" y2="33.02" width="0.1524" layer="91"/>
 <pinref part="R3" gate="G$1" pin="2"/>
-<wire x1="12.7" y1="17.78" x2="12.7" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="12.7" y1="35.56" x2="12.7" y2="53.34" width="0.1524" layer="91"/>
-<wire x1="12.7" y1="53.34" x2="12.7" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="0" y1="17.78" x2="12.7" y2="17.78" width="0.1524" layer="91"/>
-<junction x="12.7" y="17.78"/>
+<wire x1="15.24" y1="33.02" x2="15.24" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="15.24" y1="50.8" x2="15.24" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="15.24" y1="68.58" x2="15.24" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="2.54" y1="33.02" x2="15.24" y2="33.02" width="0.1524" layer="91"/>
+<junction x="15.24" y="33.02"/>
 <pinref part="R2" gate="G$1" pin="2"/>
-<wire x1="0" y1="35.56" x2="12.7" y2="35.56" width="0.1524" layer="91"/>
-<junction x="12.7" y="35.56"/>
+<wire x1="2.54" y1="50.8" x2="15.24" y2="50.8" width="0.1524" layer="91"/>
+<junction x="15.24" y="50.8"/>
 <pinref part="R1" gate="G$1" pin="2"/>
-<wire x1="0" y1="53.34" x2="12.7" y2="53.34" width="0.1524" layer="91"/>
-<junction x="12.7" y="53.34"/>
-<label x="15.24" y="53.34" size="1.778" layer="95" rot="R90"/>
+<wire x1="2.54" y1="68.58" x2="15.24" y2="68.58" width="0.1524" layer="91"/>
+<junction x="15.24" y="68.58"/>
+<label x="17.78" y="68.58" size="1.778" layer="95" rot="R90"/>
 </segment>
 <segment>
 <pinref part="U1" gate="G$1" pin="A5/SCL"/>
@@ -6230,21 +6405,21 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </segment>
 <segment>
 <pinref part="PROBE_1" gate="G$1" pin="1"/>
-<wire x1="-15.24" y1="58.42" x2="7.62" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="7.62" y1="58.42" x2="7.62" y2="40.64" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="73.66" x2="10.16" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="73.66" x2="10.16" y2="55.88" width="0.1524" layer="91"/>
 <pinref part="GND3" gate="1" pin="GND"/>
 <pinref part="PROBE_2" gate="G$1" pin="1"/>
-<wire x1="7.62" y1="40.64" x2="7.62" y2="22.86" width="0.1524" layer="91"/>
-<wire x1="7.62" y1="22.86" x2="7.62" y2="5.08" width="0.1524" layer="91"/>
-<wire x1="7.62" y1="5.08" x2="7.62" y2="-10.16" width="0.1524" layer="91"/>
-<wire x1="-15.24" y1="40.64" x2="7.62" y2="40.64" width="0.1524" layer="91"/>
-<junction x="7.62" y="40.64"/>
+<wire x1="10.16" y1="55.88" x2="10.16" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="38.1" x2="10.16" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="20.32" x2="10.16" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="55.88" x2="10.16" y2="55.88" width="0.1524" layer="91"/>
+<junction x="10.16" y="55.88"/>
 <pinref part="PROBE_3" gate="G$1" pin="1"/>
-<wire x1="-15.24" y1="22.86" x2="7.62" y2="22.86" width="0.1524" layer="91"/>
-<junction x="7.62" y="22.86"/>
+<wire x1="-12.7" y1="38.1" x2="10.16" y2="38.1" width="0.1524" layer="91"/>
+<junction x="10.16" y="38.1"/>
 <pinref part="PROBE_4" gate="G$1" pin="1"/>
-<wire x1="-15.24" y1="5.08" x2="7.62" y2="5.08" width="0.1524" layer="91"/>
-<junction x="7.62" y="5.08"/>
+<wire x1="-12.7" y1="20.32" x2="10.16" y2="20.32" width="0.1524" layer="91"/>
+<junction x="10.16" y="20.32"/>
 </segment>
 <segment>
 <pinref part="R5" gate="G$1" pin="1"/>
@@ -6276,6 +6451,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="GND5" gate="1" pin="GND"/>
 <wire x1="129.54" y1="-15.24" x2="129.54" y2="-17.78" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="U2" gate="G$1" pin="GND"/>
+<wire x1="-12.7" y1="-15.24" x2="-15.24" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="-15.24" y1="-15.24" x2="-15.24" y2="-17.78" width="0.1524" layer="91"/>
+<pinref part="GND7" gate="1" pin="GND"/>
+</segment>
 </net>
 <net name="N$1" class="0">
 <segment>
@@ -6304,6 +6485,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="P+2" gate="1" pin="+5V"/>
 <pinref part="X1" gate="G$1" pin="VDD"/>
 <wire x1="119.38" y1="91.44" x2="119.38" y2="81.28" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U2" gate="G$1" pin="VCC"/>
+<wire x1="-12.7" y1="-10.16" x2="-15.24" y2="-10.16" width="0.1524" layer="91"/>
+<wire x1="-15.24" y1="-10.16" x2="-15.24" y2="-7.62" width="0.1524" layer="91"/>
+<pinref part="P+3" gate="1" pin="+5V"/>
 </segment>
 </net>
 <net name="LCD_BKLT" class="0">
