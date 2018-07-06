@@ -1,0 +1,7 @@
+#ifndef VERSION_E3B0C442_H
+#define VERSION_E3B0C442_H
+
+#define BBIQ_VERSION "0.1";
+
+#endif // VERSION_E3B0C442_H
+
