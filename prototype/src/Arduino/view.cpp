@@ -1,4 +1,5 @@
 #include <string.h>
+#include <Arduino.h>
 #include <LiquidCrystal.h>
 #include "event.h"
 #include "pin.h"
@@ -31,18 +32,23 @@ const unsigned long VIEW_SLEEP_TIMER = 10000UL;
 bool viewIntro = true;
 bool viewDirty = false;
 bool viewActive = true;
-const unsigned long lastInteraction = 0UL;
+unsigned long lastInteraction = 0UL;
 
 ViewField viewNameField = { 0, 0, 10, "", "", "", true, true, false };
 ViewField viewTempField = { 12, 0, 4, "", "", "\xdf", false, false, false };
 ViewField viewLowField = { 0, 1, 7, "L:", "", "", true, false, false };
-ViewField viewHighField = { 0, 1, 7, "H:", "", "", true, false, false };
+ViewField viewHighField = { 8, 1, 7, "H:", "", "", true, false, false };
 
 void _drawField(ViewField* field);
 void _powerOnDisplay();
 void _powerOffDisplay();
 
 void viewSetup() {
+    registerHandler(BUTTON_DOWN_EVENT, &viewEventHandler);
+    Serial.print("View event handler pointer: ");
+    Serial.println(int(&viewEventHandler));
+    //delay(1000);
+    pinMode(PIN_LCD_BKLT, OUTPUT);
     _powerOnDisplay();
     LCD.begin(16, 2);
     LCD.setCursor(0, 0);
@@ -60,6 +66,10 @@ void viewLoop() {
             viewDirty = true;
             LCD.clear();
         }
+    }
+
+    if((long)ts - long(lastInteraction) > VIEW_SLEEP_TIMER) {
+        _powerOffDisplay();
     }
     
     if(viewDirty) {
@@ -107,11 +117,13 @@ void _drawField(ViewField* field) {
     }
 
     LCD.print(field->postfix);
+    viewDirty = false;
 }
 
 void _powerOnDisplay() {
     LCD.display();
     digitalWrite(PIN_LCD_BKLT, HIGH);
+    lastInteraction = millis();
 }
 
 void _powerOffDisplay() {
@@ -120,6 +132,7 @@ void _powerOffDisplay() {
 }
 
 void viewEventHandler(Event* e) {
+    Serial.println("TEST");
     switch(e->type) {
         case BUTTON_EVENT_TYPE:
             _powerOnDisplay();

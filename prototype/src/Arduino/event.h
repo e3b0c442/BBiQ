@@ -9,32 +9,29 @@ typedef struct _Event {
     unsigned long ts;
     void (*destroy)(struct _Event*);
 } Event;
-typedef void (*EventHandler)(Event);
+typedef void (*EventHandler)(Event*);
 
 //Event IDs
-const byte SERIAL_RX_EVENT = 0x01;
-const byte BUTTON_DOWN_EVENT = 0x02;
-const byte BUTTON_UP_EVENT = 0x03;
-const byte PROBE_CONNECT_EVENT = 0x04;
-const byte PROBE_DISCONNECT_EVENT = 0x05;
-const byte PROBE_CHANGE_EVENT = 0x06;
-const byte PROBE_ALARM_EVENT = 0x07;
-
-//Event types
-const byte SERIAL_EVENT_TYPE = 0x01;
-const byte BUTTON_EVENT_TYPE = 0x02;
-const byte PROBE_EVENT_TYPE = 0x03;
-
-const byte Events[] = {
+enum {
     SERIAL_RX_EVENT,
     BUTTON_DOWN_EVENT,
     BUTTON_UP_EVENT,
     PROBE_CONNECT_EVENT,
     PROBE_DISCONNECT_EVENT,
     PROBE_CHANGE_EVENT,
-    PROBE_ALARM_EVENT
+    PROBE_ALARM_EVENT,
+    EVENT_COUNT // used to determine length of list; must always be last
 };
 
+//Event types
+enum {
+    SERIAL_EVENT_TYPE,
+    BUTTON_EVENT_TYPE,
+    PROBE_EVENT_TYPE
+};
+
+void eventSetup();
+void registerHandler(byte eventID, EventHandler handler);
 void dispatch(Event* e);
 
 #endif // EVENT_HPP
