@@ -1,6 +1,8 @@
 #ifndef EVENT_E3B0C442_H
 #define EVENT_E3B0C442_H
 
+#include <Arduino.h>
+
 typedef struct _Event {
     byte id;
     byte type;
