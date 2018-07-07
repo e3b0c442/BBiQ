@@ -20,11 +20,13 @@ const byte BUTTON_IDS[] = {
     BUTTON_2,
     BUTTON_3
 };
-const String BUTTON_NAMES[] = {
-    "Button 1",
+
+const char* BUTTON_NAMES[] = {
+    "Button Z",
     "Button 2",
     "Button 3"
 };
+
 const byte BUTTON_PINS[] = {
     PIN_BUTTON_1,
     PIN_BUTTON_2,
@@ -33,7 +35,7 @@ const byte BUTTON_PINS[] = {
 
 typedef struct {
     byte id;
-    String name;
+    char* name;
     byte pin;
     bool state;
     bool reading;

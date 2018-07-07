@@ -6,6 +6,8 @@
 #include "version.h"
 #include "view.h"
 
+#include "freeMem.h"
+
 LiquidCrystal LCD(    
     PIN_LCD_RS, 
     PIN_LCD_ENABLE, 
@@ -44,10 +46,13 @@ void _powerOnDisplay();
 void _powerOffDisplay();
 
 void viewSetup() {
+    delay(1000);
     registerHandler(BUTTON_DOWN_EVENT, &viewEventHandler);
+
     Serial.print("View event handler pointer: ");
     Serial.println(int(&viewEventHandler));
-    //delay(1000);
+    Serial.println(freeMemory());
+    delay(1000);
     pinMode(PIN_LCD_BKLT, OUTPUT);
     _powerOnDisplay();
     LCD.begin(16, 2);

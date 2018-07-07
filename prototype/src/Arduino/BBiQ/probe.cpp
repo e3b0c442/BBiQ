@@ -11,6 +11,7 @@ Probe** probes;
 void probeSetup() {
     //Initialize the probe array
     pinMode(PIN_PROBE_POWER, OUTPUT);
+    DEFAULT_PROBE_NAMES[0] = "Hello";
     probes = (Probe**) malloc(sizeof(Probe*) * PROBE_COUNT);
     for(int i = 0; i < PROBE_COUNT; i++) {
         probes[i] = (Probe*) malloc(sizeof(Probe));

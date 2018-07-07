@@ -9,6 +9,7 @@ typedef struct _Event {
     unsigned long ts;
     void (*destroy)(struct _Event*);
 } Event;
+
 typedef void (*EventHandler)(Event*);
 
 //Event IDs
@@ -20,7 +21,7 @@ enum {
     PROBE_DISCONNECT_EVENT,
     PROBE_CHANGE_EVENT,
     PROBE_ALARM_EVENT,
-    EVENT_COUNT // used to determine length of list; must always be last
+    EVENT_COUNT
 };
 
 //Event types
