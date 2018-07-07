@@ -17,24 +17,14 @@
 
 #include "event.h"
 
-#define SERIAL_BAUD_RATE        9600
-#define SERIAL_TX_START         0x01
-#define SERIAL_TX_END           0x04
-#define SERIAL_PAYLOAD_START    0x02
-#define SERIAL_PAYLOAD_END      0x03
-#define SERIAL_PAYLOAD_START_S  "\x02"
-#define SERIAL_PAYLOAD_END_S    "\x03"
-#define SERIAL_BUFFER_LEN       64
+#define SERIAL_BAUD_RATE 9600
 
-typedef struct _SerialEvent {
+typedef struct {
     Event event;
     byte* data;
 } SerialEvent;
 
 void serialSetup();
 void serialLoop();
-byte receive(byte* payload);
-SerialEvent* newSerialEvent(byte eventID, byte* data);
-void _destroySerialEvent(Event* evt);
 
 #endif //SERIAL_E3B0C442_H

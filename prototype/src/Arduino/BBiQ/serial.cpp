@@ -5,7 +5,16 @@
 #include "event.h"
 #include "serial.h"
 
-String serialBuffer;
+#define SERIAL_TX_START         0x01
+#define SERIAL_TX_END           0x04
+#define SERIAL_PAYLOAD_START    0x02
+#define SERIAL_PAYLOAD_END      0x03
+#define SERIAL_PAYLOAD_START_S  "\x02"
+#define SERIAL_PAYLOAD_END_S    "\x03"
+
+byte receive(byte* payload);
+SerialEvent* newSerialEvent(byte eventID, byte* data);
+void _destroySerialEvent(Event* evt);
 
 void serialSetup() {
     //Serial.begin(SERIAL_BAUD_RATE);
@@ -15,7 +24,7 @@ void serialSetup() {
 void serialLoop() {
     while(Serial.available() > 0) {
         if(Serial.read() == SERIAL_TX_START) {
-            byte* payload = (byte*) malloc(SERIAL_BUFFER_LEN + 1);
+            byte* payload = (byte*) malloc(SERIAL_RX_BUFFER_SIZE + 1);
             int len = receive(payload);
             if(len == 0) {
                 break;
@@ -27,29 +36,29 @@ void serialLoop() {
     }
 }
 
-byte receive(byte* payload) {
+byte receive(byte* rx) {
     // read from Serial and validate the transmission
-    byte len = Serial.readBytesUntil(SERIAL_TX_END, payload, SERIAL_BUFFER_LEN);
-    payload[len] = 0; // add null terminator
-    if(payload[1] != SERIAL_PAYLOAD_START || payload[len - 1] != SERIAL_PAYLOAD_END) {
-        free(payload);
+    byte len = Serial.readBytesUntil(SERIAL_TX_END, rx, SERIAL_RX_BUFFER_SIZE);
+    rx[len] = 0; // add null terminator
+    if(rx[1] != SERIAL_PAYLOAD_START || rx[len - 1] != SERIAL_PAYLOAD_END) {
+        free(rx);
         return 0;
     }
 
     // tokenize the transmission
-    byte cksum = payload[0];
-    strtok((char*) payload, SERIAL_PAYLOAD_START_S);
-    char* _payload = strtok(NULL, SERIAL_PAYLOAD_END_S);
-    byte payloadLen = strlen(_payload);
+    byte cksum = rx[0];
+    strtok((char*) rx, SERIAL_PAYLOAD_START_S);
+    char* payload = strtok(NULL, SERIAL_PAYLOAD_END_S);
+    byte payloadLen = strlen(payload);
     
     // validate the checksum
-    if(!crcVerify(cksum, (byte*) _payload, payloadLen)) {
-        free(payload);
+    if(!crcVerify(cksum, (byte*) payload, payloadLen)) {
+        free(rx);
         return 0;
     }
 
     // rearrange the bytes so that the buffer contains only the payload
-    memmove(payload, _payload, payloadLen + 1);
+    memmove(rx, payload, payloadLen + 1);
     return payloadLen;
 }
 

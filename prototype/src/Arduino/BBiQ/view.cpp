@@ -41,6 +41,7 @@ ViewField viewTempField = { 12, 0, 4, "", "", "\xdf", false, false, false };
 ViewField viewLowField = { 0, 1, 7, "L:", "", "", true, false, false };
 ViewField viewHighField = { 8, 1, 7, "H:", "", "", true, false, false };
 
+void viewEventHandler(Event* evt);
 void _drawField(ViewField* field);
 void _powerOnDisplay();
 void _powerOffDisplay();

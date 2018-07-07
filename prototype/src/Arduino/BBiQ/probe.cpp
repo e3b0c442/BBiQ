@@ -3,24 +3,82 @@
 #include "pin.h"
 #include "probe.h"
 
+// Steinhart-Hart constants for Thermoworks probes
+#define STEIN_A     7.343140544e-4
+#define STEIN_B     2.157437229e-4
+#define STEIN_C     9.51568577e-8
+#define ADC_RES     1024
+#define STATIC_R    10000.0
+
+// Probe count and default names
+const byte PROBE_IDS[] = {
+    PROBE_0,
+    PROBE_1,
+    PROBE_2,
+    PROBE_3
+};
+
+const byte PROBE_COUNT = 4;
+
+const char PROBE_0_DEFAULT_NAME[] PROGMEM = "Pit";
+const char PROBE_1_DEFAULT_NAME[] PROGMEM = "Food 1";
+const char PROBE_2_DEFAULT_NAME[] PROGMEM = "Food 2";
+const char PROBE_3_DEFAULT_NAME[] PROGMEM = "Food 3";
+
+PGM_P const PROBE_DEFAULT_NAMES[] PROGMEM = {
+    PROBE_0_DEFAULT_NAME,
+    PROBE_1_DEFAULT_NAME,
+    PROBE_2_DEFAULT_NAME,
+    PROBE_3_DEFAULT_NAME
+};
+
+const byte PROBE_PINS[] = {
+    PIN_TEMP_PROBE_0,
+    PIN_TEMP_PROBE_1,
+    PIN_TEMP_PROBE_2,
+    PIN_TEMP_PROBE_3 
+};
+
+// Loop timers
+const unsigned long PROBES_POWERON_DELAY = 1;
+const unsigned long PROBES_READ_INTERVAL = 1000;
 unsigned long PROBES_POWERED_ON_TIME;
 unsigned long PROBES_LAST_READ_TIME;
 
-Probe** probes;
+// Probe information. lowAlarm/highAlarm < 0 means not set/alarming
+typedef struct {
+    byte id;
+    byte pin;
+    bool connected;
+    float temperature;
+    int lowAlarm;
+    int highAlarm;
+    const char* name;
+} Probe;
+
+Probe* probes;
+
+unsigned long   powerOnProbes();
+void            powerOffProbes();
+unsigned long   readProbes();
+void            readProbe(Probe* probe);
+ProbeEvent*     newProbeEvent(byte eventID, Probe* probe);
+void            _destroyProbeEvent(Event* e);
 
 void probeSetup() {
     //Initialize the probe array
     pinMode(PIN_PROBE_POWER, OUTPUT);
-    DEFAULT_PROBE_NAMES[0] = "Hello";
-    probes = (Probe**) malloc(sizeof(Probe*) * PROBE_COUNT);
+    probes = (Probe*) malloc(sizeof(Probe) * PROBE_COUNT);
     for(int i = 0; i < PROBE_COUNT; i++) {
-        probes[i] = (Probe*) malloc(sizeof(Probe));
-        probes[i]->name = DEFAULT_PROBE_NAMES[i];
-        probes[i]->pin = DEFAULT_PROBE_PINS[i];
-        probes[i]->connected = false;
-        probes[i]->temperature = 0.0;
-        probes[i]->lowAlarm = 140.0;
-        probes[i]->highAlarm = 160.0;
+        char* name = malloc(sizeof(char) * (strlen_P(pgm_read_word(&(PROBE_DEFAULT_NAMES[i]))+1)));
+        strcpy_P(name, pgm_read_word(&(PROBE_DEFAULT_NAMES[i])));
+        probes[i].id = PROBE_IDS[i];
+        probes[i].name = name;
+        probes[i].pin = PROBE_PINS[i];
+        probes[i].connected = false;
+        probes[i].temperature = 0.0;
+        probes[i].lowAlarm = 140.0;
+        probes[i].highAlarm = 160.0;
     }
 }
 
@@ -33,10 +91,10 @@ void powerOffProbes() {
     digitalWrite(PIN_PROBE_POWER, LOW);
 }
 
-unsigned long readProbes(Probe** probes, int len) {
+unsigned long readProbes() {
     digitalWrite(PIN_PROBE_POWER, HIGH);
-    for(int i = 0; i < len; i++) {
-        readProbe(probes[i]);
+    for(int i = 0; i < PROBE_COUNT; i++) {
+        readProbe(&probes[i]);
     }
     return millis();
 }
@@ -66,11 +124,11 @@ void readProbe(Probe* probe) {
     }
 }
 
-void probeLoop(Probe** probes, int len) {
+void probeLoop() {
     unsigned long loopTime = millis();
     if(long(PROBES_POWERED_ON_TIME) - long(PROBES_LAST_READ_TIME) > 0) {
         if(long(loopTime) - long(PROBES_POWERED_ON_TIME) > PROBES_POWERON_DELAY) {
-            PROBES_LAST_READ_TIME = readProbes(probes, len);
+            PROBES_LAST_READ_TIME = readProbes();
             powerOffProbes();
         }
     } else {
