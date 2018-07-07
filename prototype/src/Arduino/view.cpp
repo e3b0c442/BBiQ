@@ -27,18 +27,23 @@ typedef struct {
 } ViewField;
 
 const unsigned long VIEW_INTRO_DURATION = 5000UL;
-
+const unsigned long VIEW_SLEEP_TIMER = 10000UL;
 bool viewIntro = true;
 bool viewDirty = false;
+bool viewActive = true;
+const unsigned long lastInteraction = 0UL;
 
 ViewField viewNameField = { 0, 0, 10, "", "", "", true, true, false };
 ViewField viewTempField = { 12, 0, 4, "", "", "\xdf", false, false, false };
 ViewField viewLowField = { 0, 1, 7, "L:", "", "", true, false, false };
-ViewField viewHighField = { 0, 1, 7, "L:", "", "", true, false, false };
+ViewField viewHighField = { 0, 1, 7, "H:", "", "", true, false, false };
 
 void _drawField(ViewField* field);
+void _powerOnDisplay();
+void _powerOffDisplay();
 
 void viewSetup() {
+    _powerOnDisplay();
     LCD.begin(16, 2);
     LCD.setCursor(0, 0);
     LCD.print(F("BBiQ v"));
@@ -102,4 +107,23 @@ void _drawField(ViewField* field) {
     }
 
     LCD.print(field->postfix);
+}
+
+void _powerOnDisplay() {
+    LCD.display();
+    digitalWrite(PIN_LCD_BKLT, HIGH);
+}
+
+void _powerOffDisplay() {
+    LCD.noDisplay();
+    digitalWrite(PIN_LCD_BKLT, LOW);
+}
+
+void viewEventHandler(Event* e) {
+    switch(e->type) {
+        case BUTTON_EVENT_TYPE:
+            _powerOnDisplay();
+        break;
+    };
+    e->destroy;
 }
