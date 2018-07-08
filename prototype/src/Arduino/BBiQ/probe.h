@@ -12,6 +12,15 @@ enum {
     PROBE_3
 };
 
+const byte PROBE_IDS[] = {
+    PROBE_0,
+    PROBE_1,
+    PROBE_2,
+    PROBE_3
+};
+
+const byte PROBE_COUNT = 4;
+
 typedef struct _ProbeEvent {
     Event event;
     byte probe;

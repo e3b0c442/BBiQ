@@ -21,6 +21,7 @@ enum {
     PROBE_DISCONNECT_EVENT,
     PROBE_CHANGE_EVENT,
     PROBE_ALARM_EVENT,
+    VIEW_UPDATE_EVENT,
     EVENT_COUNT
 };
 
@@ -28,7 +29,8 @@ enum {
 enum {
     SERIAL_EVENT_TYPE,
     BUTTON_EVENT_TYPE,
-    PROBE_EVENT_TYPE
+    PROBE_EVENT_TYPE,
+    VIEW_CTRL_EVENT_TYPE
 };
 
 void eventSetup();

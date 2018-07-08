@@ -17,7 +17,7 @@ SerialEvent* newSerialEvent(byte eventID, byte* data);
 void _destroySerialEvent(Event* evt);
 
 void serialSetup() {
-    //Serial.begin(SERIAL_BAUD_RATE);
+    Serial.begin(SERIAL_BAUD_RATE);
     Serial.println(F("Begin"));
 }
 

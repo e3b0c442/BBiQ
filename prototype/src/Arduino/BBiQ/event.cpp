@@ -24,6 +24,8 @@ void registerHandler(byte eventID, EventHandler handler) {
 }
 
 void dispatch(Event* e) {
+    Serial.println("GOOD");
+    Serial.flush();
     _HandlerMap* map = &eventHandlers[e->id];
     for(int i = 0; i < map->count; i++) {
         map->handlers[i](e);

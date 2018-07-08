@@ -11,21 +11,13 @@
 #define STATIC_R    10000.0
 
 // Probe count and default names
-const byte PROBE_IDS[] = {
-    PROBE_0,
-    PROBE_1,
-    PROBE_2,
-    PROBE_3
-};
-
-const byte PROBE_COUNT = 4;
 
 const char PROBE_0_DEFAULT_NAME[] PROGMEM = "Pit";
 const char PROBE_1_DEFAULT_NAME[] PROGMEM = "Food 1";
 const char PROBE_2_DEFAULT_NAME[] PROGMEM = "Food 2";
 const char PROBE_3_DEFAULT_NAME[] PROGMEM = "Food 3";
 
-PGM_P const PROBE_DEFAULT_NAMES[] PROGMEM = {
+const char* const PROBE_DEFAULT_NAMES[] PROGMEM = {
     PROBE_0_DEFAULT_NAME,
     PROBE_1_DEFAULT_NAME,
     PROBE_2_DEFAULT_NAME,
@@ -36,7 +28,7 @@ const byte PROBE_PINS[] = {
     PIN_TEMP_PROBE_0,
     PIN_TEMP_PROBE_1,
     PIN_TEMP_PROBE_2,
-    PIN_TEMP_PROBE_3 
+    PIN_TEMP_PROBE_3
 };
 
 // Loop timers
@@ -70,7 +62,7 @@ void probeSetup() {
     pinMode(PIN_PROBE_POWER, OUTPUT);
     probes = (Probe*) malloc(sizeof(Probe) * PROBE_COUNT);
     for(int i = 0; i < PROBE_COUNT; i++) {
-        char* name = malloc(sizeof(char) * (strlen_P(pgm_read_word(&(PROBE_DEFAULT_NAMES[i]))+1)));
+        char *name = malloc(sizeof(char)*(strlen_P(pgm_read_word(&(PROBE_DEFAULT_NAMES[i]))) + 1));
         strcpy_P(name, pgm_read_word(&(PROBE_DEFAULT_NAMES[i])));
         probes[i].id = PROBE_IDS[i];
         probes[i].name = name;
@@ -151,6 +143,7 @@ ProbeEvent* newProbeEvent(byte eventID, Probe* probe) {
     e->temperature = probe->temperature;
     e->highAlarm = probe->highAlarm;
     e->lowAlarm = probe->lowAlarm;
+    return e;
 }
 
 void _destroyProbeEvent(Event* e) {

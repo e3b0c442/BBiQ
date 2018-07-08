@@ -4,6 +4,7 @@
 #include "probe.h"
 #include "serial.h"
 #include "view.h"
+#include "view_ctrl.h"
 
 #include "freeMem.h"
 
@@ -12,12 +13,14 @@ void bbiqSetup() {
     serialSetup();
     buttonSetup();
     probeSetup();
+    viewCtrlSetup();
     viewSetup();
 }
 
 void bbiqLoop() {
-    Serial.print("Free memory: ");
-    Serial.println(freeMemory());
+    //Serial.print("Free memory: ");
+    //Serial.println(freeMemory());
+    //Serial.flush();
     serialLoop();
     buttonLoop();
     probeLoop();

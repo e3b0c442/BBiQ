@@ -5,6 +5,8 @@
 #include "pin.h"
 #include "version.h"
 #include "view.h"
+#include "view_ctrl.h"
+#include "view_fields.h"
 
 #include "freeMem.h"
 
@@ -41,19 +43,21 @@ ViewField viewTempField = { 12, 0, 4, "", "", "\xdf", false, false, false };
 ViewField viewLowField = { 0, 1, 7, "L:", "", "", true, false, false };
 ViewField viewHighField = { 8, 1, 7, "H:", "", "", true, false, false };
 
+ViewField* viewFields[] = {
+    &viewNameField,
+    &viewTempField,
+    &viewLowField,
+    &viewHighField
+};
+
 void viewEventHandler(Event* evt);
 void _drawField(ViewField* field);
 void _powerOnDisplay();
 void _powerOffDisplay();
 
 void viewSetup() {
-    delay(1000);
     registerHandler(BUTTON_DOWN_EVENT, &viewEventHandler);
-
-    Serial.print("View event handler pointer: ");
-    Serial.println(int(&viewEventHandler));
-    Serial.println(freeMemory());
-    delay(1000);
+    registerHandler(VIEW_UPDATE_EVENT, &viewEventHandler);
     pinMode(PIN_LCD_BKLT, OUTPUT);
     _powerOnDisplay();
     LCD.begin(16, 2);
@@ -142,6 +146,20 @@ void viewEventHandler(Event* e) {
     switch(e->type) {
         case BUTTON_EVENT_TYPE:
             _powerOnDisplay();
+        break;
+        case VIEW_CTRL_EVENT_TYPE:
+            Serial.println("VIEW HANDLING UPDATE EVENT");
+            ViewCtrlEvent* vce = (ViewCtrlEvent*)e;
+            ViewField* field = viewFields[vce->field];
+            field->selected = vce->selected;
+            field->blank = vce->blank;
+            if(vce->value != NULL) {
+                char* old = field->value;
+                field->value = malloc(sizeof(char) * (strlen(vce->value) + 1));
+                strcpy(field->value, vce->value);
+                free(old);
+            }
+            viewDirty = true;
         break;
     };
     e->destroy;
