@@ -12,5 +12,6 @@ typedef struct {
 } ViewCtrlEvent;
 
 void viewCtrlSetup();
+void viewCtrlLoop();
 
 #endif // VIEW_CTRL_E3B0C442_H

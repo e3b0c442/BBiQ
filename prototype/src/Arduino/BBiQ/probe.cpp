@@ -37,17 +37,6 @@ const unsigned long PROBES_READ_INTERVAL = 1000;
 unsigned long PROBES_POWERED_ON_TIME;
 unsigned long PROBES_LAST_READ_TIME;
 
-// Probe information. lowAlarm/highAlarm < 0 means not set/alarming
-typedef struct {
-    byte id;
-    byte pin;
-    bool connected;
-    float temperature;
-    int lowAlarm;
-    int highAlarm;
-    const char* name;
-} Probe;
-
 Probe* probes;
 
 unsigned long   powerOnProbes();

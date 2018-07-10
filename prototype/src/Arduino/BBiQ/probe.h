@@ -21,6 +21,19 @@ const byte PROBE_IDS[] = {
 
 const byte PROBE_COUNT = 4;
 
+// Probe information. lowAlarm/highAlarm < 0 means not set/alarming
+typedef struct {
+    byte id;
+    byte pin;
+    bool connected;
+    float temperature;
+    int lowAlarm;
+    int highAlarm;
+    const char* name;
+} Probe;
+
+extern Probe* probes;
+
 typedef struct _ProbeEvent {
     Event event;
     byte probe;

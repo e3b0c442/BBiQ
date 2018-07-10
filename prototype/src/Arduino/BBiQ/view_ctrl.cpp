@@ -15,75 +15,94 @@ const byte viewCtrlSelectableFields[] = {
 const byte viewCtrlSelectableFieldCount = 3;
 byte viewCtrlSelectedFieldIndex = 0;
 
+const unsigned long viewCtrlBlinkSpeed = 255UL;
+unsigned long viewCtrlLastBlink = 0UL;
+bool viewCtrlBlink = true;
 
-void viewCtrlEventHandler(Event* e);
+void viewCtrlButtonEventHandler(Event* e);
 ViewCtrlEvent* newViewCtrlEvent(byte field, char* value, bool selected, bool blank);
 void _destroyViewCtrlEvent(Event* e);
 
 void viewCtrlSetup() {
-    registerHandler(PROBE_CHANGE_EVENT, &viewCtrlEventHandler);
-    registerHandler(PROBE_CONNECT_EVENT, &viewCtrlEventHandler);
-    registerHandler(PROBE_DISCONNECT_EVENT, &viewCtrlEventHandler);
-    registerHandler(BUTTON_DOWN_EVENT, &viewCtrlEventHandler);
+    //registerHandler(PROBE_CHANGE_EVENT, &viewCtrlEventHandler);
+    //registerHandler(PROBE_CONNECT_EVENT, &viewCtrlEventHandler);
+    //registerHandler(PROBE_DISCONNECT_EVENT, &viewCtrlEventHandler);
+    registerHandler(BUTTON_DOWN_EVENT, &viewCtrlButtonEventHandler);
 }
 
-void viewCtrlEventHandler(Event* e) {
-    Serial.println(F("HANDLING VIEW EVENT"));
-    switch(e->id) {
-        case BUTTON_DOWN_EVENT:
-            ButtonEvent* be = (ButtonEvent*)e;
-            switch(be->button) {
-                case BUTTON_0:
-                break;
-                case BUTTON_1:
-                    if(viewCtrlEditing) {
+void viewCtrlLoop() {
+    unsigned long ts = millis();
+    if(viewCtrlEditing) {
+        if(long(ts) - (long)viewCtrlLastBlink > viewCtrlBlinkSpeed) {
+            viewCtrlBlink = !viewCtrlBlink;
+            viewCtrlLastBlink = ts;
+            dispatch((Event*)newViewCtrlEvent(
+                viewCtrlSelectedFields[viewCtrlSelectedFieldIndex],
+                NULL,
+                true,
+                viewCtrlBlink
+            ));
+        }
+    }
+}
 
-                    } else {
-                        dispatch((Event*)newViewCtrlEvent(
-                            viewCtrlSelectableFields[viewCtrlSelectedFieldIndex],
-                            NULL,
-                            false,
-                            false
-                        ));
-                        if(viewCtrlSelectedFieldIndex == 0) {
-                            viewCtrlSelectedFieldIndex = viewCtrlSelectableFieldCount - 1;
-                        } else {
-                            viewCtrlSelectedFieldIndex--;
-                        }
-                        dispatch((Event*)newViewCtrlEvent(
-                            viewCtrlSelectableFields[viewCtrlSelectedFieldIndex],
-                            NULL,
-                            true,
-                            false
-                        ));
-                    }
-                break;
-                case BUTTON_2:
-                    if(viewCtrlEditing) {
+void viewCtrlButtonEventHandler(Event* e) {
+    ButtonEvent* be = (ButtonEvent*)e;
+    switch(be->button) {
+        case BUTTON_0:
+            viewCtrlEditing = !viewCtrlEditing;
+            dispatch((Event*)newViewCtrlEvent(
+                viewCtrlSelectedFields[viewCtrlSelectedFieldIndex],
+                NULL,
+                false,
+                false
+            ));
+        break;
+        case BUTTON_1:
+            if(viewCtrlEditing) {
 
-                    } else {
-                        dispatch((Event*)newViewCtrlEvent(
-                            viewCtrlSelectableFields[viewCtrlSelectedFieldIndex],
-                            NULL,
-                            false,
-                            false
-                        ));
-                        if(viewCtrlSelectedFieldIndex == viewCtrlSelectableFieldCount - 1) {
-                            viewCtrlSelectedFieldIndex = 0;
-                        } else {
-                            viewCtrlSelectedFieldIndex++;
-                        }
-                        dispatch((Event*)newViewCtrlEvent(
-                            viewCtrlSelectableFields[viewCtrlSelectedFieldIndex],
-                            NULL,
-                            true,
-                            false
-                        ));
-                    }
-                break;
+            } else {
+                dispatch((Event*)newViewCtrlEvent(
+                    viewCtrlSelectableFields[viewCtrlSelectedFieldIndex],
+                    NULL,
+                    false,
+                    false
+                ));
+                if(viewCtrlSelectedFieldIndex == 0) {
+                    viewCtrlSelectedFieldIndex = viewCtrlSelectableFieldCount - 1;
+                } else {
+                    viewCtrlSelectedFieldIndex--;
+                }
+                dispatch((Event*)newViewCtrlEvent(
+                    viewCtrlSelectableFields[viewCtrlSelectedFieldIndex],
+                    NULL,
+                    true,
+                    false
+                ));
             }
         break;
-        case PROBE_CHANGE_EVENT:
+        case BUTTON_2:
+            if(viewCtrlEditing) {
+
+            } else {
+                dispatch((Event*)newViewCtrlEvent(
+                    viewCtrlSelectableFields[viewCtrlSelectedFieldIndex],
+                    NULL,
+                    false,
+                    false
+                ));
+                if(viewCtrlSelectedFieldIndex == viewCtrlSelectableFieldCount - 1) {
+                    viewCtrlSelectedFieldIndex = 0;
+                } else {
+                    viewCtrlSelectedFieldIndex++;
+                }
+                dispatch((Event*)newViewCtrlEvent(
+                    viewCtrlSelectableFields[viewCtrlSelectedFieldIndex],
+                    NULL,
+                    true,
+                    false
+                ));
+            }
         break;
     }
 }
