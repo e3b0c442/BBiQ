@@ -13,6 +13,14 @@ typedef enum {
     PROBE_COUNT
 } ProbeID;
 
+typedef enum {
+    PROBE_FIELD_NAME,
+    PROBE_FIELD_TEMP,
+    PROBE_FIELD_LOW,
+    PROBE_FIELD_HIGH,
+    PROBE_FIELD_COUNT
+} ProbeFieldID;
+
 typedef struct {
     ProbeID id;
     byte pin;
@@ -20,16 +28,16 @@ typedef struct {
     float temperature;
     int lowAlarm;
     int highAlarm;
-    const char* name;
+    const char *name;
 } Probe;
 
-extern Probe* probes;
+extern Probe *probes;
 extern byte probeConnectedCount;
 
 typedef struct _ProbeEvent {
     Event event;
     ProbeID probe;
-    void (*destroy)(struct _ProbeEvent*);
+    void (*destroy)(struct _ProbeEvent *);
 } ProbeEvent;
 
 void probeSetup();

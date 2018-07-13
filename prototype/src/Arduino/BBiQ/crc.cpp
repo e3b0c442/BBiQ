@@ -36,7 +36,7 @@ const byte CRC_TABLE[] PROGMEM = {
 	0xea,	0xd,	0xc3,	0x24,	0xb8,	0x5f,	0x91,	0x76	
 };
 
-byte crcCompute(byte* data, int len) {
+byte crcCompute(byte *data, int len) {
     byte crc = 0;
     for(int i = 0; i < len; i++) {
         crc = pgm_read_byte(&CRC_TABLE[data[i] ^ crc]);
@@ -44,7 +44,7 @@ byte crcCompute(byte* data, int len) {
     return crc;
 }
 
-bool crcVerify(byte crc, byte* data, int len) {
+bool crcVerify(byte crc, byte *data, int len) {
     byte dataCRC = crcCompute(data, len);
     return dataCRC == crc;
 }

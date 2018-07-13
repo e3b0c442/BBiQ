@@ -21,7 +21,7 @@
 
 typedef struct {
     Event event;
-    byte* data;
+    byte *data;
 } SerialEvent;
 
 void serialSetup();

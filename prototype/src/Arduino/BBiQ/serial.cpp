@@ -12,9 +12,9 @@
 #define SERIAL_PAYLOAD_START_S  "\x02"
 #define SERIAL_PAYLOAD_END_S    "\x03"
 
-byte receive(byte* payload);
-SerialEvent* newSerialEvent(EventID eventID, byte* data);
-void _destroySerialEvent(Event* evt);
+byte receive(byte *payload);
+SerialEvent *newSerialEvent(EventID eventID, byte *data);
+void _destroySerialEvent(Event *evt);
 
 void serialSetup() {
     Serial.begin(SERIAL_BAUD_RATE);
@@ -24,19 +24,19 @@ void serialSetup() {
 void serialLoop() {
     while(Serial.available() > 0) {
         if(Serial.read() == SERIAL_TX_START) {
-            byte* payload = (byte*) malloc(SERIAL_RX_BUFFER_SIZE + 1);
+            byte *payload = (byte *)malloc(SERIAL_RX_BUFFER_SIZE + 1);
             int len = receive(payload);
             if(len == 0) {
                 break;
             }
-            payload = (byte*) realloc(payload, len + 1); // free some heap
-            dispatch((Event*) newSerialEvent(SERIAL_RX_EVENT, payload));
+            payload = (byte *)realloc(payload, len + 1); // free some heap
+            dispatch((Event *)newSerialEvent(SERIAL_RX_EVENT, payload));
             break;
         }
     }
 }
 
-byte receive(byte* rx) {
+byte receive(byte *rx) {
     // read from Serial and validate the transmission
     byte len = Serial.readBytesUntil(SERIAL_TX_END, rx, SERIAL_RX_BUFFER_SIZE);
     rx[len] = 0; // add null terminator
@@ -47,12 +47,12 @@ byte receive(byte* rx) {
 
     // tokenize the transmission
     byte cksum = rx[0];
-    strtok((char*) rx, SERIAL_PAYLOAD_START_S);
-    char* payload = strtok(NULL, SERIAL_PAYLOAD_END_S);
+    strtok((char *)rx, SERIAL_PAYLOAD_START_S);
+    char *payload = strtok(NULL, SERIAL_PAYLOAD_END_S);
     byte payloadLen = strlen(payload);
     
     // validate the checksum
-    if(!crcVerify(cksum, (byte*) payload, payloadLen)) {
+    if(!crcVerify(cksum, (byte *)payload, payloadLen)) {
         free(rx);
         return 0;
     }
@@ -62,8 +62,8 @@ byte receive(byte* rx) {
     return payloadLen;
 }
 
-SerialEvent* newSerialEvent(EventID eventID, byte* data) {
-    SerialEvent* e = (SerialEvent*) malloc(sizeof(SerialEvent));
+SerialEvent *newSerialEvent(EventID eventID, byte *data) {
+    SerialEvent *e = (SerialEvent *)malloc(sizeof(SerialEvent));
     e->event = {
         .id = eventID,
         .type = SERIAL_EVENT_TYPE,
@@ -74,8 +74,8 @@ SerialEvent* newSerialEvent(EventID eventID, byte* data) {
     return e;
 }
 
-void _destroySerialEvent(Event* e) {
-    SerialEvent* evt = (SerialEvent*) e;
+void _destroySerialEvent(Event *e) {
+    SerialEvent *evt = (SerialEvent *)e;
     free(evt->data);
     free(e);
 }

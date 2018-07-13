@@ -28,13 +28,13 @@ typedef struct _Event {
     EventID id;
     EventType type;
     unsigned long ts;
-    void (*destroy)(struct _Event*);
+    void (*destroy)(struct _Event *);
 } Event;
 
-typedef void (*EventHandler)(Event*);
+typedef void (*EventHandler)(Event *);
 
 void eventSetup();
 void registerHandler(EventID eventID, EventHandler handler);
-void dispatch(Event* e);
+void dispatch(Event *e);
 
 #endif // EVENT_HPP

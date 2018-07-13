@@ -165,7 +165,7 @@ void displayEventHandler(Event *e) {
 
 char *getProbeField(ProbeID probeID, ProbeFieldID fieldID) {
     Probe *probe = &probes[probeID];
-    char *r = (char*) malloc(13 * sizeof(char));
+    char *r = (char *)malloc(13 * sizeof(char));
     switch(fieldID) {
         case PROBE_FIELD_NAME:
             strcpy(r, probe->name);

@@ -8,11 +8,10 @@ const unsigned long BUTTON_REPEAT_DELAY = 500;
 const unsigned long BUTTON_INITIAL_REPEAT_DELAY = 1000;
 
 // Button count and array order
-const byte BUTTON_COUNT = 3;
-const byte BUTTON_IDS[] = {
+const ButtonID BUTTON_IDS[] = {
     BUTTON_0,
     BUTTON_1,
-    BUTTON_2
+    BUTTON_2,
 };
 
 const byte BUTTON_PINS[] = {
@@ -31,15 +30,15 @@ typedef struct {
     unsigned long lastRepeat;
 } Button;
 
-Button* buttons;
+Button *buttons;
 
-void readButtons(Button* buttons, int len, unsigned long ms);
-void readButton(Button* button, unsigned long ms);
-ButtonEvent* newButtonEvent(EventID eventID, Button* button);
-void _destroyButtonEvent(Event* evt);
+void readButtons(Button *buttons, int len, unsigned long ms);
+void readButton(Button *button, unsigned long ms);
+ButtonEvent *newButtonEvent(EventID eventID, Button *button);
+void _destroyButtonEvent(Event *evt);
 
 void buttonSetup() {
-    buttons = (Button*) malloc(sizeof(Button) * BUTTON_COUNT);
+    buttons = (Button *)malloc(sizeof(Button) * BUTTON_COUNT);
     for(int i = 0; i < BUTTON_COUNT; i++) {
         pinMode(BUTTON_PINS[i], INPUT_PULLUP);
         buttons[i].id = BUTTON_IDS[i];
@@ -57,13 +56,13 @@ void buttonLoop() {
     readButtons(buttons, BUTTON_COUNT, ts);
 }
 
-void readButtons(Button* buttons, int len, unsigned long ts) {
+void readButtons(Button *buttons, int len, unsigned long ts) {
     for(int i = 0; i < len; i++) {
         readButton(&buttons[i], ts);
     }
 }
 
-void readButton(Button* button, unsigned long ts) {
+void readButton(Button *button, unsigned long ts) {
     bool reading = digitalRead(button->pin);
     if(reading != button->reading) {
         button->lastChange = ts;
@@ -73,7 +72,7 @@ void readButton(Button* button, unsigned long ts) {
         if(long(ts) - long(button->lastChange) > long(BUTTON_DEBOUNCE_DELAY)) {
             button->state = button->reading;
             button->repeat = false;
-            dispatch((Event*)newButtonEvent((button->state == HIGH ? BUTTON_UP_EVENT : BUTTON_DOWN_EVENT), button));
+            dispatch((Event *)newButtonEvent((button->state == HIGH ? BUTTON_UP_EVENT : BUTTON_DOWN_EVENT), button));
         }
     } else {
         if(button->state == LOW) {
@@ -81,15 +80,15 @@ void readButton(Button* button, unsigned long ts) {
                 if(long(ts) - long(button->lastRepeat) > long(BUTTON_REPEAT_DELAY)) {
                     button->lastRepeat = ts;
                     button->repeat = true;
-                    dispatch((Event*)newButtonEvent(BUTTON_DOWN_EVENT, button));
+                    dispatch((Event *)newButtonEvent(BUTTON_DOWN_EVENT, button));
                 }
             }
         }
     }
 }
 
-ButtonEvent* newButtonEvent(EventID eventID, Button* button) {
-    ButtonEvent *e = (ButtonEvent*) malloc(sizeof(ButtonEvent));
+ButtonEvent *newButtonEvent(EventID eventID, Button *button) {
+    ButtonEvent *e = (ButtonEvent *)malloc(sizeof(ButtonEvent));
     e->event = {
         .id = eventID,
         .type = BUTTON_EVENT_TYPE,
@@ -102,6 +101,6 @@ ButtonEvent* newButtonEvent(EventID eventID, Button* button) {
     return e;
 }
 
-void _destroyButtonEvent(Event* e) {
+void _destroyButtonEvent(Event *e) {
     free(e);
 }

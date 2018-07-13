@@ -16,7 +16,7 @@ const char PROBE_1_DEFAULT_NAME[] PROGMEM = "Food 1";
 const char PROBE_2_DEFAULT_NAME[] PROGMEM = "Food 2";
 const char PROBE_3_DEFAULT_NAME[] PROGMEM = "Food 3";
 
-const char* const PROBE_DEFAULT_NAMES[] PROGMEM = {
+const char *const PROBE_DEFAULT_NAMES[] PROGMEM = {
     PROBE_0_DEFAULT_NAME,
     PROBE_1_DEFAULT_NAME,
     PROBE_2_DEFAULT_NAME,
@@ -38,23 +38,23 @@ const unsigned long PROBES_READ_INTERVAL = 1000;
 unsigned long PROBES_POWERED_ON_TIME;
 unsigned long PROBES_LAST_READ_TIME;
 
-Probe* probes;
+Probe *probes;
 
-unsigned long   powerOnProbes();
-void            powerOffProbes();
-unsigned long   readProbes();
-void            readProbe(Probe* probe);
-ProbeEvent*     newProbeEvent(EventID eventID, ProbeID probe);
-void            _destroyProbeEvent(Event* e);
+unsigned long powerOnProbes();
+void powerOffProbes();
+unsigned long readProbes();
+void readProbe(Probe *probe);
+ProbeEvent *newProbeEvent(EventID eventID, ProbeID probe);
+void _destroyProbeEvent(Event *e);
 
 void probeSetup() {
     //Initialize the probe array
     pinMode(PIN_PROBE_POWER, OUTPUT);
     probeConnectedCount = 0;
-    probes = (Probe*) malloc(sizeof(Probe) * PROBE_COUNT);
+    probes = (Probe*)malloc(sizeof(Probe) * PROBE_COUNT);
     for(byte i = 0; i < PROBE_COUNT; i++) {
-        char *name = (char*) malloc(sizeof(char)*(strlen_P((char*) pgm_read_word(&(PROBE_DEFAULT_NAMES[i]))) + 1));
-        strcpy_P(name, (char*) pgm_read_word(&(PROBE_DEFAULT_NAMES[i])));
+        char *name = (char *)malloc(sizeof(char)*(strlen_P((char *)pgm_read_word(&(PROBE_DEFAULT_NAMES[i]))) + 1));
+        strcpy_P(name, (char *)pgm_read_word(&(PROBE_DEFAULT_NAMES[i])));
         probes[i].id = (ProbeID)i;
         probes[i].name = name;
         probes[i].pin = PROBE_PINS[i];
@@ -82,7 +82,7 @@ unsigned long readProbes() {
     return millis();
 }
 
-void readProbe(Probe* probe) {
+void readProbe(Probe *probe) {
     int x = analogRead(probe->pin);
     bool oldConn = probe->connected;
     float oldTemp = probe->temperature;
@@ -123,8 +123,8 @@ void probeLoop() {
     }
 }
 
-ProbeEvent* newProbeEvent(EventID eventID, ProbeID probe) {
-    ProbeEvent* e = (ProbeEvent*) malloc(sizeof(ProbeEvent));
+ProbeEvent *newProbeEvent(EventID eventID, ProbeID probe) {
+    ProbeEvent *e = (ProbeEvent *)malloc(sizeof(ProbeEvent));
     e->event = {
         .id = eventID,
         .type = PROBE_EVENT_TYPE,
@@ -135,6 +135,6 @@ ProbeEvent* newProbeEvent(EventID eventID, ProbeID probe) {
     return e;
 }
 
-void _destroyProbeEvent(Event* e) {
+void _destroyProbeEvent(Event *e) {
     free(e);
 }

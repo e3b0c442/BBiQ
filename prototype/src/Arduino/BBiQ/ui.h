@@ -9,20 +9,19 @@ typedef enum {
     SCREEN_PROBE
 } ScreenID;
 
-typedef enum {
-    PROBE_FIELD_NAME,
-    PROBE_FIELD_TEMP,
-    PROBE_FIELD_LOW,
-    PROBE_FIELD_HIGH,
-    PROBE_FIELD_COUNT
-} ProbeFieldID;
-
 typedef struct {
     ProbeFieldID id;
     bool rw;
     byte x, y, w;
     const char *pre, *post;
 } ProbeScreenField;
+
+typedef struct {
+    Event event;
+    ProbeID probe;
+    ProbeFieldID field;
+    char delta;
+} LocalInputEvent;
 
 const ProbeScreenField probeScreenFields[] = {
     {
@@ -68,7 +67,6 @@ extern ProbeID uiSelectedProbe;
 extern ProbeFieldID uiSelectedProbeField;
 extern bool fieldEditing;
 extern bool displayPowered;
-
 
 void uiSetup();
 
