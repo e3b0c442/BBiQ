@@ -22,7 +22,7 @@ const byte BUTTON_PINS[] = {
 };
 
 typedef struct {
-    byte id;
+    ButtonID id;
     byte pin;
     bool state;
     bool reading;
@@ -35,7 +35,7 @@ Button* buttons;
 
 void readButtons(Button* buttons, int len, unsigned long ms);
 void readButton(Button* button, unsigned long ms);
-ButtonEvent* newButtonEvent(byte eventID, Button* button);
+ButtonEvent* newButtonEvent(EventID eventID, Button* button);
 void _destroyButtonEvent(Event* evt);
 
 void buttonSetup() {
@@ -88,13 +88,13 @@ void readButton(Button* button, unsigned long ts) {
     }
 }
 
-ButtonEvent* newButtonEvent(byte eventID, Button* button) {
-    ButtonEvent* e = (ButtonEvent*) malloc(sizeof(ButtonEvent));
+ButtonEvent* newButtonEvent(EventID eventID, Button* button) {
+    ButtonEvent *e = (ButtonEvent*) malloc(sizeof(ButtonEvent));
     e->event = {
-        eventID,
-        BUTTON_EVENT_TYPE,
-        millis(),
-        _destroyButtonEvent
+        .id = eventID,
+        .type = BUTTON_EVENT_TYPE,
+        .ts = millis(),
+        .destroy = _destroyButtonEvent
     };
     e->button = button->id;
     e->state = button->state;

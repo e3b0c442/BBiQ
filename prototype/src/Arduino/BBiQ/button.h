@@ -5,15 +5,15 @@
 #include "event.h"
 #include "pin.h"
 
-enum {
+typedef enum {
     BUTTON_0,
     BUTTON_1,
     BUTTON_2
-};
+} ButtonID;
 
 typedef struct {
     Event event;
-    byte button;
+    ButtonID button;
     bool state;
     bool repeat;
 } ButtonEvent;

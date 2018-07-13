@@ -11,7 +11,6 @@
 #define STATIC_R    10000.0
 
 // Probe count and default names
-
 const char PROBE_0_DEFAULT_NAME[] PROGMEM = "Pit";
 const char PROBE_1_DEFAULT_NAME[] PROGMEM = "Food 1";
 const char PROBE_2_DEFAULT_NAME[] PROGMEM = "Food 2";
@@ -31,6 +30,8 @@ const byte PROBE_PINS[] = {
     PIN_TEMP_PROBE_3
 };
 
+byte probeConnectedCount = 0;
+
 // Loop timers
 const unsigned long PROBES_POWERON_DELAY = 1;
 const unsigned long PROBES_READ_INTERVAL = 1000;
@@ -43,17 +44,18 @@ unsigned long   powerOnProbes();
 void            powerOffProbes();
 unsigned long   readProbes();
 void            readProbe(Probe* probe);
-ProbeEvent*     newProbeEvent(byte eventID, Probe* probe);
+ProbeEvent*     newProbeEvent(EventID eventID, ProbeID probe);
 void            _destroyProbeEvent(Event* e);
 
 void probeSetup() {
     //Initialize the probe array
     pinMode(PIN_PROBE_POWER, OUTPUT);
+    probeConnectedCount = 0;
     probes = (Probe*) malloc(sizeof(Probe) * PROBE_COUNT);
-    for(int i = 0; i < PROBE_COUNT; i++) {
-        char *name = malloc(sizeof(char)*(strlen_P(pgm_read_word(&(PROBE_DEFAULT_NAMES[i]))) + 1));
-        strcpy_P(name, pgm_read_word(&(PROBE_DEFAULT_NAMES[i])));
-        probes[i].id = PROBE_IDS[i];
+    for(byte i = 0; i < PROBE_COUNT; i++) {
+        char *name = (char*) malloc(sizeof(char)*(strlen_P((char*) pgm_read_word(&(PROBE_DEFAULT_NAMES[i]))) + 1));
+        strcpy_P(name, (char*) pgm_read_word(&(PROBE_DEFAULT_NAMES[i])));
+        probes[i].id = (ProbeID)i;
         probes[i].name = name;
         probes[i].pin = PROBE_PINS[i];
         probes[i].connected = false;
@@ -88,7 +90,8 @@ void readProbe(Probe* probe) {
         probe->connected = false;
         probe->temperature = 0;
         if(oldConn) {
-            dispatch((Event*)newProbeEvent(PROBE_DISCONNECT_EVENT, probe));
+            probeConnectedCount--;
+            dispatch((Event*)newProbeEvent(PROBE_DISCONNECT_EVENT, probe->id));
         }
         return;
     }
@@ -98,10 +101,11 @@ void readProbe(Probe* probe) {
     probe->connected = true;
     probe->temperature = temp;
     if(!oldConn) {
-        dispatch((Event*)newProbeEvent(PROBE_CONNECT_EVENT, probe));
+        probeConnectedCount++;
+        dispatch((Event*)newProbeEvent(PROBE_CONNECT_EVENT, probe->id));
     }
     if(probe->temperature != oldTemp) {
-        dispatch((Event*)newProbeEvent(PROBE_CHANGE_EVENT, probe));
+        dispatch((Event*)newProbeEvent(PROBE_CHANGE_EVENT, probe->id));
     }
 }
 
@@ -119,19 +123,15 @@ void probeLoop() {
     }
 }
 
-ProbeEvent* newProbeEvent(byte eventID, Probe* probe) {
+ProbeEvent* newProbeEvent(EventID eventID, ProbeID probe) {
     ProbeEvent* e = (ProbeEvent*) malloc(sizeof(ProbeEvent));
     e->event = {
-        eventID,
-        PROBE_EVENT_TYPE,
-        millis(),
-        _destroyProbeEvent
+        .id = eventID,
+        .type = PROBE_EVENT_TYPE,
+        .ts = millis(),
+        .destroy = _destroyProbeEvent
     };
-    e->probe = probe->id;
-    e->connected = probe->connected;
-    e->temperature = probe->temperature;
-    e->highAlarm = probe->highAlarm;
-    e->lowAlarm = probe->lowAlarm;
+    e->probe = probe;
     return e;
 }
 

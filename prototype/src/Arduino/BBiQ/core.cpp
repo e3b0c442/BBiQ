@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include "button.h"
+#include "display.h"
 #include "event.h"
 #include "probe.h"
 #include "serial.h"
-#include "view.h"
-#include "view_ctrl.h"
+#include "ui.h"
 
 #include "freeMem.h"
 
@@ -13,8 +13,8 @@ void bbiqSetup() {
     serialSetup();
     buttonSetup();
     probeSetup();
-    viewCtrlSetup();
-    viewSetup();
+    uiSetup();
+    displaySetup();
 }
 
 void bbiqLoop() {
@@ -24,6 +24,6 @@ void bbiqLoop() {
     serialLoop();
     buttonLoop();
     probeLoop();
-    viewLoop();
+    displayLoop();
 }
 

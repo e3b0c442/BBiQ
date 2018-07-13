@@ -3,17 +3,8 @@
 
 #include <Arduino.h>
 
-typedef struct _Event {
-    byte id;
-    byte type;
-    unsigned long ts;
-    void (*destroy)(struct _Event*);
-} Event;
-
-typedef void (*EventHandler)(Event*);
-
 //Event IDs
-enum {
+typedef enum {
     SERIAL_RX_EVENT,
     BUTTON_DOWN_EVENT,
     BUTTON_UP_EVENT,
@@ -21,20 +12,29 @@ enum {
     PROBE_DISCONNECT_EVENT,
     PROBE_CHANGE_EVENT,
     PROBE_ALARM_EVENT,
-    VIEW_UPDATE_EVENT,
+    LOCAL_INPUT_EVENT,
     EVENT_COUNT
-};
+} EventID;
 
 //Event types
-enum {
+typedef enum {
     SERIAL_EVENT_TYPE,
     BUTTON_EVENT_TYPE,
     PROBE_EVENT_TYPE,
-    VIEW_CTRL_EVENT_TYPE
-};
+    LOCAL_INPUT_EVENT_TYPE,
+} EventType;
+
+typedef struct _Event {
+    EventID id;
+    EventType type;
+    unsigned long ts;
+    void (*destroy)(struct _Event*);
+} Event;
+
+typedef void (*EventHandler)(Event*);
 
 void eventSetup();
-void registerHandler(byte eventID, EventHandler handler);
+void registerHandler(EventID eventID, EventHandler handler);
 void dispatch(Event* e);
 
 #endif // EVENT_HPP

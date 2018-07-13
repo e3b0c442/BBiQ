@@ -13,7 +13,7 @@
 #define SERIAL_PAYLOAD_END_S    "\x03"
 
 byte receive(byte* payload);
-SerialEvent* newSerialEvent(byte eventID, byte* data);
+SerialEvent* newSerialEvent(EventID eventID, byte* data);
 void _destroySerialEvent(Event* evt);
 
 void serialSetup() {
@@ -62,13 +62,13 @@ byte receive(byte* rx) {
     return payloadLen;
 }
 
-SerialEvent* newSerialEvent(byte eventID, byte* data) {
+SerialEvent* newSerialEvent(EventID eventID, byte* data) {
     SerialEvent* e = (SerialEvent*) malloc(sizeof(SerialEvent));
     e->event = {
-        eventID,
-        SERIAL_EVENT_TYPE,
-        millis(),
-        _destroySerialEvent
+        .id = eventID,
+        .type = SERIAL_EVENT_TYPE,
+        .ts = millis(),
+        .destroy = _destroySerialEvent
     };
     e->data = data;
     return e;
