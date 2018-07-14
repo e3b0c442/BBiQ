@@ -65,7 +65,7 @@ void probeSetup() {
         probes[i].lowAlarm = 140.0;
         probes[i].highAlarm = 160.0;
     }
-    registerHandler(LOCAL_INPUT_EVENT, &probeEventHandler)
+    registerHandler(LOCAL_INPUT_EVENT, &probeEventHandler);
 }
 
 unsigned long powerOnProbes() {
@@ -128,11 +128,25 @@ void probeLoop() {
 
 void probeEventHandler(Event *e) {
     LocalInputEvent *li = (LocalInputEvent *)e;
+    if(li->delta == 0) {
+        return;
+    }
+
     Probe *p = &probes[li->probe];
     switch(li->field) {
         case PROBE_FIELD_LOW:
-            p->lowAlarm = ((int)p->lowAlarm / li->delta + 1) * (li->delta + 1);
+            if(p->lowAlarm % li->delta) {
+                p->lowAlarm = ((int)p->lowAlarm / li->delta + (li->delta > 0 ? 1 : 0)) * li->delta;
+            } else {
+                p->lowAlarm += li->delta;
+            }
+            break;
         case PROBE_FIELD_HIGH:
+            if(p->highAlarm % li->delta) {
+                p->highAlarm = ((int)p->highAlarm / li->delta + (li->delta > 0 ? 1 : 0)) * li->delta;
+            } else {
+                p->highAlarm += li->delta;
+            }
     }
 }
 

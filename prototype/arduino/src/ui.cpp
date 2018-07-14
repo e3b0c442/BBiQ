@@ -3,10 +3,11 @@
 #include "ui.h"
 #include "probe.h"
 
+const unsigned long UI_INTRO_LENGTH = 5000UL;
+
 ScreenID uiDisplayScreen = SCREEN_INTRO;
 ProbeID uiSelectedProbe = PROBE_0;
 ProbeFieldID uiSelectedProbeField = PROBE_FIELD_NAME;
-bool uiScreenSleeping = false;
 bool displayPowered = true;
 bool fieldEditing = false;
 
@@ -16,10 +17,21 @@ void selectPrevProbe();
 void selectNextProbe();
 void uiEventHandler(Event *e);
 LocalInputEvent* newLocalInputEvent(ProbeID probe, ProbeFieldID field, char delta);
+void _destroyLocalInputEvent(Event *e);
 
 void uiSetup() {
     registerHandler(BUTTON_DOWN_EVENT, &uiEventHandler);
     registerHandler(PROBE_DISCONNECT_EVENT, &uiEventHandler);
+}
+
+void uiLoop() {
+    if(uiDisplayScreen == SCREEN_INTRO) {
+        unsigned long ts = millis();
+        if((long)UI_INTRO_LENGTH - long(ts) < 0) {
+            uiDisplayScreen = probeConnectedCount > 0 ? SCREEN_PROBE : SCREEN_NOCONNECT;
+            dispatch(newGenericEvent(UI_CHANGE_SCREEN_EVENT));
+        }
+    }
 }
 
 void selectPrevField() {
@@ -65,7 +77,7 @@ void selectNextProbe() {
 void uiEventHandler(Event *e) {
     switch(e->id) {
         case BUTTON_DOWN_EVENT:
-            if(uiScreenSleeping) {
+            if(!displayPowered) {
                 return;
             }
             ButtonEvent *be = (ButtonEvent*)e;
@@ -105,7 +117,6 @@ void uiEventHandler(Event *e) {
                     }
                     break;
             }
-        default:
     }
 }
 

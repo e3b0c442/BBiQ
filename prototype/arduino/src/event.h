@@ -14,6 +14,7 @@ typedef enum {
     PROBE_ALARM_EVENT,
     LOCAL_INPUT_EVENT,
     UI_CHANGE_EVENT,
+    UI_CHANGE_SCREEN_EVENT,
     EVENT_COUNT
 } EventID;
 
@@ -40,6 +41,5 @@ void eventSetup();
 void registerHandler(EventID eventID, EventHandler handler);
 void dispatch(Event *e);
 Event *newGenericEvent(EventID id);
-void _destroyGenericEvent(Event* e);
 
 #endif // EVENT_HPP

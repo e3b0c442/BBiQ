@@ -8,6 +8,8 @@ typedef struct {
 
 _HandlerMap eventHandlers[EVENT_COUNT];
 
+void _destroyGenericEvent(Event* e);
+
 void eventSetup() {
     for(byte i = 0; i < EVENT_COUNT; i++) {
         eventHandlers[i].count = 0;
@@ -23,6 +25,8 @@ void registerHandler(EventID eventID, EventHandler handler) {
 }
 
 void dispatch(Event *e) {
+    Serial.print("Event triggered: ");
+    Serial.println((byte)e->id);
     _HandlerMap *map = &eventHandlers[e->id];
     for(int i = 0; i < map->count; i++) {
         map->handlers[i](e);
@@ -37,4 +41,8 @@ Event* newGenericEvent(EventID id) {
     e->ts = millis();
     e->destroy = _destroyGenericEvent;
     return e;
+}
+
+void _destroyGenericEvent(Event* e) {
+    free(e);
 }

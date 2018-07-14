@@ -22,6 +22,7 @@ bool displayDirty = false;
 unsigned long displayLastInteraction = 0UL;
 bool displayFlash = true;
 unsigned long displayLastFlash = 0UL;
+bool displayScreenChanged = false;
 
 void displayDraw();
 void drawScreenIntro();
@@ -41,11 +42,13 @@ void displaySetup() {
     registerHandler(BUTTON_DOWN_EVENT, &displayEventHandler);
     registerHandler(LOCAL_INPUT_EVENT, &displayEventHandler);
     registerHandler(PROBE_CHANGE_EVENT, &displayEventHandler);
+    registerHandler(UI_CHANGE_EVENT, &displayEventHandler);
+    registerHandler(UI_CHANGE_SCREEN_EVENT, &displayEventHandler);
 }
 
 void displayLoop() {
+    unsigned long ts = millis();
     if(fieldEditing) {
-        unsigned long ts = millis();
         if((long)ts - (long)displayLastFlash > (long)DISPLAY_FLASH_INTERVAL) {
             displayLastFlash = ts;
             displayFlash = !displayFlash;
@@ -56,6 +59,9 @@ void displayLoop() {
             displayFlash = true;
             displayDirty = true;
         }
+        if((long)ts - (long)displayLastInteraction > (long)DISPLAY_TIMEOUT) {
+            displayPowerOff();
+        }
     }
 
     if(displayDirty) {
@@ -65,6 +71,10 @@ void displayLoop() {
 }
 
 void displayDraw() {
+    if(displayScreenChanged) {
+        LCD.clear();
+        displayScreenChanged = false;
+    }
     switch(uiDisplayScreen) {
         case SCREEN_INTRO:
             drawScreenIntro();
@@ -104,32 +114,39 @@ void drawScreenProbeField(ProbeID probeID, ProbeFieldID fieldID) {
     LCD.setCursor(field->x, field->y);
     LCD.print(field->pre);
 
-    if(field->rw && fieldID == uiSelectedProbeField) {
-        LCD.print(F("["));
-    } else {
-        LCD.print(F(" "));
+    if(field->rw) {
+        if(fieldID == uiSelectedProbeField) {
+            LCD.print(F("["));
+        } else {
+            LCD.print(F(" "));
+        }
     }
 
-    byte maxLen = field->w - 2 - strlen(field->pre) - strlen(field->post);
+    byte maxLen = field->w - (field->rw ? 2 : 0) - strlen(field->pre) - strlen(field->post);
     char toPrint[maxLen + 1];
     toPrint[maxLen] = '\0';
     memset(toPrint, ' ', maxLen);
-    if(displayFlash) {
+    if(fieldID != uiSelectedProbeField || displayFlash) {
         char *val = getProbeField(probeID, fieldID);
         byte valLen = strlen(val);
         if(valLen >= maxLen) {
             strncpy(toPrint, val, valLen);
         } else {
             strcpy(toPrint, val);
+            if(valLen < maxLen) {
+                toPrint[valLen] = ' ';
+            }
         }
         free(val);
     }
     LCD.print(toPrint);
 
-    if(field->rw && fieldID == uiSelectedProbeField) {
-        LCD.print(F("]"));
-    } else {
-        LCD.print(F(" "));
+    if(field->rw) {
+        if(field->id == uiSelectedProbeField) {
+            LCD.print(F("]"));
+        } else {
+            LCD.print(F(" "));
+        }
     }
 
     LCD.print(field->post);
@@ -157,8 +174,14 @@ void displayEventHandler(Event *e) {
         case BUTTON_DOWN_EVENT:
             displayPowerOn();
             break;
+        case UI_CHANGE_SCREEN_EVENT:
+            displayScreenChanged = true;
         default:
             displayDirty = true;
+            if(fieldEditing) {
+                displayLastFlash = millis();
+                displayFlash = true;
+            }
             break;
     }
 }

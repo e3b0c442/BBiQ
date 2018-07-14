@@ -36,7 +36,7 @@ const ProbeScreenField probeScreenFields[] = {
     {
         .id = PROBE_FIELD_TEMP,
         .rw = false,
-        .x = 12,
+        .x = 11,
         .y = 0,
         .w = 4,
         .pre = "",
@@ -69,5 +69,6 @@ extern bool fieldEditing;
 extern bool displayPowered;
 
 void uiSetup();
+void uiLoop();
 
 #endif // UI_E3B0C442_H

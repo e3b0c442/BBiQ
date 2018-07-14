@@ -8,6 +8,8 @@
 
 #include "freeMem.h"
 
+unsigned long lastMemMillis = 0UL;
+
 void bbiqSetup() {
     eventSetup(); // must be first so other setup functions can register event handlers.
     serialSetup();
@@ -18,12 +20,17 @@ void bbiqSetup() {
 }
 
 void bbiqLoop() {
-    //Serial.print("Free memory: ");
-    //Serial.println(freeMemory());
-    //Serial.flush();
+    long ms;
+    if((ms = (long)millis()) - (long)lastMemMillis > 1000L) {
+        lastMemMillis = ms;
+        Serial.print("Free memory: ");
+        Serial.println(freeMemory());
+        Serial.flush();
+    }
     serialLoop();
     buttonLoop();
     probeLoop();
+    uiLoop();
     displayLoop();
 }
 
