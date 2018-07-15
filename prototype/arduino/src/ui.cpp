@@ -1,3 +1,5 @@
+#pragma GCC diagnostic ignored "-Wswitch"
+
 #include "button.h"
 #include "event.h"
 #include "ui.h"

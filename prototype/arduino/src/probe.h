@@ -28,6 +28,7 @@ typedef struct {
     float temperature;
     int lowAlarm;
     int highAlarm;
+    bool arm;
     const char *name;
 } Probe;
 

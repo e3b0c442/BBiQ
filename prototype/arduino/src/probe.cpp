@@ -62,8 +62,9 @@ void probeSetup() {
         probes[i].pin = PROBE_PINS[i];
         probes[i].connected = false;
         probes[i].temperature = 0.0;
-        probes[i].lowAlarm = 140.0;
-        probes[i].highAlarm = 160.0;
+        probes[i].lowAlarm = 32.0;
+        probes[i].highAlarm = 212.0;
+        probes[i].arm = false;
     }
     registerHandler(LOCAL_INPUT_EVENT, &probeEventHandler);
 }
@@ -105,10 +106,23 @@ void readProbe(Probe *probe) {
     probe->temperature = temp;
     if(!oldConn) {
         probeConnectedCount++;
-        dispatch((Event*)newProbeEvent(PROBE_CONNECT_EVENT, probe->id));
+        dispatch((Event *)newProbeEvent(PROBE_CONNECT_EVENT, probe->id));
     }
     if(probe->temperature != oldTemp) {
         dispatch((Event*)newProbeEvent(PROBE_CHANGE_EVENT, probe->id));
+        if(probe->arm) {
+            if(probe->temperature < probe->highAlarm - 1.0 && probe->temperature > probe->lowAlarm + 1.0) {
+                probe->arm = false;
+            } else if(probe->temperature > probe->highAlarm || probe->temperature < probe->lowAlarm) {
+                dispatch((Event *)newProbeEvent(PROBE_ALARM_EVENT, probe->id));
+                probe->arm = false;
+            }
+        } else {
+            if((probe->temperature > probe->highAlarm - 1.0 && oldTemp < probe->highAlarm - 1.0) ||
+                 (probe->temperature < probe->lowAlarm + 1.0 && oldTemp > probe->lowAlarm + 1.0)) {
+                probe->arm = true;
+            }
+        }
     }
 }
 

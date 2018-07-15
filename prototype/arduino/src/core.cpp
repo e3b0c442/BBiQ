@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "button.h"
+#include "buzzer.h"
 #include "display.h"
 #include "event.h"
 #include "probe.h"
@@ -16,21 +17,23 @@ void bbiqSetup() {
     buttonSetup();
     probeSetup();
     uiSetup();
+    buzzerSetup();
     displaySetup();
 }
 
 void bbiqLoop() {
-    long ms;
+    /*long ms;
     if((ms = (long)millis()) - (long)lastMemMillis > 1000L) {
         lastMemMillis = ms;
         Serial.print("Free memory: ");
         Serial.println(freeMemory());
         Serial.flush();
-    }
+    }*/
     serialLoop();
     buttonLoop();
     probeLoop();
     uiLoop();
+    buzzerLoop();
     displayLoop();
 }
 
