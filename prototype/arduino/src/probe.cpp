@@ -1,3 +1,5 @@
+#pragma GCC diagnostic ignored "-Wswitch"
+
 #include <Arduino.h>
 #include "event.h"
 #include "pin.h"
@@ -129,7 +131,7 @@ void readProbe(Probe *probe) {
 void probeLoop() {
     unsigned long loopTime = millis();
     if(long(PROBES_POWERED_ON_TIME) - long(PROBES_LAST_READ_TIME) > 0) {
-        if(long(loopTime) - long(PROBES_POWERED_ON_TIME) > PROBES_POWERON_DELAY) {
+        if(long(loopTime) - long(PROBES_POWERED_ON_TIME) > (long)PROBES_POWERON_DELAY) {
             PROBES_LAST_READ_TIME = readProbes();
             powerOffProbes();
         }

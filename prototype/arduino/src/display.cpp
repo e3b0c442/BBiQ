@@ -1,3 +1,5 @@
+#pragma GCC diagnostic ignored "-Wswitch"
+
 #include <LiquidCrystal.h>
 #include <stdlib.h>
 #include "display.h"
