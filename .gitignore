@@ -33,3 +33,7 @@
 
 # Editor
 .vscode/
+
+# schematic extras
+*.b#*
+*.s#*
