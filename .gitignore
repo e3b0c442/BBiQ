@@ -37,3 +37,5 @@
 # schematic extras
 *.b#*
 *.s#*
+*.job
+*.pro
