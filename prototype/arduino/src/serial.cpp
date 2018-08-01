@@ -1,24 +1,19 @@
 #include <Firmata.h>
 #include "crc.h"
+#include "event.h"
 #include "probe.h"
 #include "serial.h"
+#include "serialize.h"
 
-#define SOH     0x01
-#define STX     0x02
-#define ETX     0x03
-#define EOT     0x04
-#define SOH_S   "\x01"
-#define STX_S   "\x02"
-#define ETX_S   "\x03"
-#define EOT_S   "\x04"
-
-#define SYSEX_BBIQ_MESSAGE 0x00
+#define SYSEX_BBIQ_MESSAGE 0x01
 
 void sysexCallback(byte cmd, byte count, byte* data);
 SerialEvent *newSerialEvent(byte cmd, byte count, byte *data);
 void _destroySerialEvent(Event *e);
+void serialEventHandler(Event *e);
 
 void serialSetup() {
+    registerHandler(PROBE_CHANGE_EVENT, &serialEventHandler);
     Firmata.setFirmwareVersion(FIRMATA_MAJOR_VERSION, FIRMATA_MINOR_VERSION);
     Firmata.attach(START_SYSEX, &sysexCallback);
     Firmata.begin();
@@ -84,4 +79,15 @@ void _destroySerialEvent(Event *e) {
     SerialEvent *evt = (SerialEvent *)e;
     free(evt->data);
     free(e);
+}
+
+void serialEventHandler(Event *e){
+    switch(e->type) {
+        case PROBE_CHANGE_EVENT:
+            ProbeEvent *pce = (ProbeEvent *)e;
+            ProbeID probe = pce->probe;
+            float temp = probes[probe].
+            break;
+        default:
+    }
 }

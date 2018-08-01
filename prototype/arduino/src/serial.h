@@ -14,6 +14,11 @@
  * 0        SOH
  * 1        8-bit CRC of everything between STX and ETX exclusive
  * 2        STX
+ * 3        Message type
+ * 4        US
+ * 5        Message key (pin number, or NUL if irrelevant)
+ * 6        US
+ * 7        Value as determined by message type
  * 3..30    Data (up to 28 bytes, no padding required)
  * DAT+1    ETX
  * ETX+1    EOT
@@ -25,6 +30,16 @@
 
 #include <SoftwareSerial.h>
 #include "event.h"
+
+#define SOH     0x01
+#define STX     0x02
+#define ETX     0x03
+#define EOT     0x04
+#define US      0x1F
+#define SOH_S   "\x01"
+#define STX_S   "\x02"
+#define ETX_S   "\x03"
+#define EOT_S   "\x04"
 
 typedef struct {
     Event event;

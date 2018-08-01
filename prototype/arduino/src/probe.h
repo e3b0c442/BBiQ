@@ -38,6 +38,7 @@ extern byte probeConnectedCount;
 typedef struct _ProbeEvent {
     Event event;
     ProbeID probe;
+    ProbeFieldID field;
     void (*destroy)(struct _ProbeEvent *);
 } ProbeEvent;
 

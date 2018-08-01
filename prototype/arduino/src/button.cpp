@@ -4,7 +4,7 @@
 #include "pin.h"
 
 const unsigned long BUTTON_DEBOUNCE_DELAY = 10;
-const unsigned long BUTTON_REPEAT_DELAY = 500;
+const unsigned long BUTTON_REPEAT_DELAY = 250;
 const unsigned long BUTTON_INITIAL_REPEAT_DELAY = 1000;
 
 // Button count and array order

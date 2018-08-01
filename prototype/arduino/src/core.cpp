@@ -22,13 +22,6 @@ void bbiqSetup() {
 }
 
 void bbiqLoop() {
-    /*long ms;
-    if((ms = (long)millis()) - (long)lastMemMillis > 1000L) {
-        lastMemMillis = ms;
-        Serial.print("Free memory: ");
-        Serial.println(freeMemory());
-        Serial.flush();
-    }*/
     serialLoop();
     buttonLoop();
     probeLoop();

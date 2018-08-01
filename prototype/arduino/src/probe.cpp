@@ -65,7 +65,7 @@ void probeSetup() {
         probes[i].connected = false;
         probes[i].temperature = 0.0;
         probes[i].lowAlarm = 32.0;
-        probes[i].highAlarm = 212.0;
+        probes[i].highAlarm = 500.0;
         probes[i].arm = false;
     }
     registerHandler(LOCAL_INPUT_EVENT, &probeEventHandler);

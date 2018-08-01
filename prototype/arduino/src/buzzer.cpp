@@ -8,7 +8,7 @@ enum {
     BEEP_LONG
 };
 
-const unsigned int BUZZER_FREQUENCY = 2500U;
+const unsigned int BUZZER_FREQUENCY = 2700U;
 const byte BEEP_SEQUENCE = 4;
 const unsigned long BEEP_LENGTH = 100UL;
 const unsigned long BEEP_SHORT_INTERVAL = 200UL;
