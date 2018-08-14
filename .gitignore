@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+
+# Editor
+.vscode/
+
+# schematic extras
+*.b#*
+*.s#*
+*.job
+*.pro
