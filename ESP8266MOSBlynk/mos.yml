@@ -1,35 +1,69 @@
 author: mongoose-os
-description: Using Blynk mobile app with Mongoose OS
+description: A Mongoose OS app skeleton
 version: 1.0
 
 libs_version: ${mos.version}
 modules_version: ${mos.version}
 mongoose_os_version: ${mos.version}
 
+# Optional. List of tags for online search.
+tags:
+  - c
+
+# List of files / directories with C sources. No slashes at the end of dir names.
 sources:
   - src
+
+# List of dirs. Files from these dirs will be copied to the device filesystem
 filesystem:
   - fs
+
+# Custom configuration entries, settable via "device configuration"
+# Below is a custom firmware configuration example.
+# Uncomment and modify according to your needs:
+
+config_schema:
+  - ["i2c.enable", true]
+  - ["sys.atca.enable", true]
+  - ["blynk.enable", true]
+  - ["blynk.server", "blynk.e3b0c442.io:8080"]
+  - ["blynk.auth", "2b2ff7ceb5dc4d48b13dcc7d1b6fc2fb"]
+#  - ["my_app", "o", {title: "My app custom settings"}]
+#  - ["my_app.bool_value", "b", false, {title: "Some boolean value"}]
+#  - ["my_app.string_value", "s", "", {title: "Some string value"}]
+#  - ["my_app.int_value", "i", 123, {title: "Some integer value"}]
+
+# These settings get compiled into the C structure, and can be accessed
+# from the C code this way:
+#
+# printf("Hello from %s!\n", mgos_sys_config_get_device_id());
+#
+# Settings are cool: can be modified remotely without full firmware upgrade!
+#
+# To see all available compiled settings, buid the firmware and open
+# build/gen/mgos_config.h file.
+#
+# Also, in this config_schema section, you can override existing
+# settings that has been created by other libraries. For example, debug log
+# level is 2 by default. For this firmware we can override it to 3:
+#
+# config_schema:
+#  - ["debug.level", 3]
+
 libs:
-  # common mgos libs
   - origin: https://github.com/mongoose-os-libs/boards
   - origin: https://github.com/mongoose-os-libs/ca-bundle
   - origin: https://github.com/mongoose-os-libs/rpc-service-config
-  - origin: https://github.com/mongoose-os-libs/rpc-service-i2c
   - origin: https://github.com/mongoose-os-libs/rpc-service-fs
+  - origin: https://github.com/mongoose-os-libs/rpc-service-i2c
+  - origin: https://github.com/mongoose-os-libs/rpc-service-atca
   - origin: https://github.com/mongoose-os-libs/rpc-uart
-  - origin: https://github.com/mongoose-os-libs/spi
   - origin: https://github.com/mongoose-os-libs/i2c
-
-  # libs necessary for the current app
-  - origin: https://github.com/mongoose-os-libs/blynk
-  - origin: https://github.com/mongoose-os-libs/mjs
+  - origin: https://github.com/mongoose-os-libs/atca
   - origin: https://github.com/mongoose-os-libs/wifi
-tags:
-  - js
-  - c
-  - mobile
-  - example
-  - cloud
+  - origin: https://github.com/mongoose-os-libs/http-server
+  - origin: https://github.com/mongoose-os-libs/wifi-setup-web-ui
+  - origin: https://github.com/mongoose-os-libs/blynk
 
-manifest_version: 2017-05-18
+# Used by the mos tool to catch mos binaries incompatible with this file format
+manifest_version: 2017-09-29

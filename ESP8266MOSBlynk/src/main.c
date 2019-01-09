@@ -1,6 +1,35 @@
-#include <stdio.h>
-#include "mgos_app.h"
+/*
+ * Copyright (c) 2014-2018 Cesanta Software Limited
+ * All rights reserved
+ *
+ * Licensed under the Apache License, Version 2.0 (the ""License"");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an ""AS IS"" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-enum mgos_app_init_result mgos_app_init(void) {
+#include "mgos.h"
+#include "mgos_blynk.h"
+
+void blynk_handler(struct mg_connection *conn __attribute__((unused)),
+                   const char *cmd __attribute__((unused)),
+                   int pin __attribute__((unused)),
+                   int val __attribute__((unused)),
+                   int id __attribute__((unused)),
+                   void *user_data __attribute__((unused)))
+{
+  LOG(LL_INFO, ("PING"));
+}
+enum mgos_app_init_result mgos_app_init(void)
+{
+  blynk_set_handler(blynk_handler, NULL);
+  LOG(LL_INFO, ("Hi there"));
   return MGOS_APP_INIT_SUCCESS;
 }
