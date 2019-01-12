@@ -25,9 +25,14 @@ filesystem:
 config_schema:
   - ["i2c.enable", true]
   - ["sys.atca.enable", true]
-  - ["blynk.enable", true]
-  - ["blynk.server", "blynk.e3b0c442.io:8080"]
-  - ["blynk.auth", "2b2ff7ceb5dc4d48b13dcc7d1b6fc2fb"]
+  - ["blynk.enable", "b", true, { title: "Blynk enable" }]
+  - ["blynk.server", "s", "blynk.e3b0c442.io:8080", { title: "Blynk server" }]
+  - [
+      "blynk.auth",
+      "s",
+      "2b2ff7ceb5dc4d48b13dcc7d1b6fc2fb",
+      { title: "Blynk auth token" },
+    ]
 #  - ["my_app", "o", {title: "My app custom settings"}]
 #  - ["my_app.bool_value", "b", false, {title: "Some boolean value"}]
 #  - ["my_app.string_value", "s", "", {title: "Some string value"}]
@@ -53,6 +58,7 @@ config_schema:
 libs:
   - origin: https://github.com/mongoose-os-libs/boards
   - origin: https://github.com/mongoose-os-libs/ca-bundle
+  - origin: https://github.com/mongoose-os-libs/rpc-common
   - origin: https://github.com/mongoose-os-libs/rpc-service-config
   - origin: https://github.com/mongoose-os-libs/rpc-service-fs
   - origin: https://github.com/mongoose-os-libs/rpc-service-i2c
@@ -63,7 +69,6 @@ libs:
   - origin: https://github.com/mongoose-os-libs/wifi
   - origin: https://github.com/mongoose-os-libs/http-server
   - origin: https://github.com/mongoose-os-libs/wifi-setup-web-ui
-  - origin: https://github.com/mongoose-os-libs/blynk
 
 # Used by the mos tool to catch mos binaries incompatible with this file format
 manifest_version: 2017-09-29

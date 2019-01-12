@@ -39,3 +39,7 @@
 *.s#*
 *.job
 *.pro
+
+# Mongoose OS cruft
+*/build/
+*/deps/

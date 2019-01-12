@@ -16,20 +16,25 @@
  */
 
 #include "mgos.h"
-#include "mgos_blynk.h"
+#include "blynk.h"
 
-void blynk_handler(struct mg_connection *conn __attribute__((unused)),
-                   const char *cmd __attribute__((unused)),
-                   int pin __attribute__((unused)),
-                   int val __attribute__((unused)),
-                   int id __attribute__((unused)),
-                   void *user_data __attribute__((unused)))
+static uint16_t update_counter = 0;
+
+void updater_cb(void *arg __attribute__((unused)))
 {
-  LOG(LL_INFO, ("PING"));
+  if (blynk_conn != NULL)
+  {
+    update_counter++;
+    uint8_t data[7] = {'v', 'w', '\0', '0', '\0', 0, 0};
+    data[5] = (update_counter / 10 % 10) + 48;
+    data[6] = (update_counter % 10) + 48;
+    blynk_send(blynk_conn, BLYNK_HARDWARE, 0, data, sizeof(data));
+  }
 }
+
 enum mgos_app_init_result mgos_app_init(void)
 {
-  blynk_set_handler(blynk_handler, NULL);
-  LOG(LL_INFO, ("Hi there"));
+  blynk_connect(NULL);
+  mgos_set_timer(5000, MGOS_TIMER_REPEAT, updater_cb, NULL);
   return MGOS_APP_INIT_SUCCESS;
 }
