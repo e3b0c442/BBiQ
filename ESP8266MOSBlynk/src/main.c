@@ -16,6 +16,7 @@
  */
 
 #include "mgos.h"
+#include "mgos_rpc.h"
 #include "blynk.h"
 
 static uint16_t update_counter = 0;
@@ -32,9 +33,15 @@ void updater_cb(void *arg __attribute__((unused)))
   }
 }
 
+void tester_cb(void *arg __attribute__((unused)))
+{
+  mgos_rpc_call("UART", "test", "test", NULL, NULL);
+}
+
 enum mgos_app_init_result mgos_app_init(void)
 {
   blynk_connect(NULL);
   mgos_set_timer(5000, MGOS_TIMER_REPEAT, updater_cb, NULL);
+  mgos_set_timer(2500, MGOS_TIMER_REPEAT, tester_cb, NULL);
   return MGOS_APP_INIT_SUCCESS;
 }

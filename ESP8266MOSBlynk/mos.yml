@@ -23,8 +23,10 @@ filesystem:
 # Uncomment and modify according to your needs:
 
 config_schema:
+  - ["debug.level", 3]
   - ["i2c.enable", true]
   - ["sys.atca.enable", true]
+  - ["rpc.uart.fc_type", 0]
   - ["blynk.enable", "b", true, { title: "Blynk enable" }]
   - ["blynk.server", "s", "blynk.e3b0c442.io:8080", { title: "Blynk server" }]
   - [

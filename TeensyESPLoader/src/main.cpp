@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 
 #define ESP_BOOT_MODE 6
 #define ESP_RESET_BUTTON 7
@@ -23,6 +24,10 @@ SERIAL_MODE serialMode = SERIAL_BOOTROM;
 uint8_t resetState = LOW;
 unsigned long lastPing = 1000;
 
+static char json_buffer[256] = {0};
+static uint8_t json_depth = 0;
+static uint8_t json_cursor = 0;
+
 void setup()
 {
   //Set up the pins
@@ -45,6 +50,22 @@ void setup()
   Serial.print(ESP_NORMAL_BITRATE);
   Serial.print("\n");
   bootTriggered = millis();
+}
+
+void gotJSON()
+{
+  StaticJsonBuffer<256> buf;
+  JsonObject &obj = buf.parseObject(json_buffer);
+  if (obj.success())
+  {
+    Serial.println("Got good JSON message");
+    obj.printTo(Serial);
+  }
+  else
+  {
+    Serial.println("Invalid JSON message");
+  }
+  json_cursor = 0;
 }
 
 void loop()
@@ -97,6 +118,30 @@ void loop()
 
   if (Serial1.available())
   {
+    /*char c = Serial1.read();
+    switch (c)
+    {
+    case '{':
+      json_depth++;
+      json_buffer[json_cursor] = c;
+      json_cursor++;
+      break;
+    case '}':
+      json_depth--;
+      json_buffer[json_cursor] = c;
+      json_cursor++;
+      if (json_depth == 0)
+        gotJSON();
+      break;
+    default:
+      if (json_depth > 0)
+      {
+        json_buffer[json_cursor] = c;
+        json_cursor++;
+      }
+      else
+        Serial.write(c);
+    }*/
     Serial.write(Serial1.read());
   }
 
