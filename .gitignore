@@ -43,3 +43,4 @@
 # Mongoose OS cruft
 */build/
 */deps/
+*/core-*

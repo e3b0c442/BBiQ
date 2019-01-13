@@ -88,6 +88,8 @@ void loop()
     serialMode = SERIAL_BOOTROM;
     Serial1.end();
     Serial1.begin(serialMode);
+    json_cursor = 0;
+    json_depth = 0;
     digitalWrite(ESP_RST, resetState);
     digitalWrite(ESP_IO0, bootMode);
     while (!Serial1)
@@ -104,6 +106,7 @@ void loop()
     Serial.print(serialMode);
     Serial.println("");
   }
+
   if (digitalRead(ESP_RESET_BUTTON) == LOW)
   {
     bootTriggered = loopStart;
@@ -118,31 +121,39 @@ void loop()
 
   if (Serial1.available())
   {
-    /*char c = Serial1.read();
-    switch (c)
+    Serial.write(Serial1.read());
+    /*if (digitalRead(ESP_BOOT_MODE) == LOW)
     {
-    case '{':
-      json_depth++;
-      json_buffer[json_cursor] = c;
-      json_cursor++;
-      break;
-    case '}':
-      json_depth--;
-      json_buffer[json_cursor] = c;
-      json_cursor++;
-      if (json_depth == 0)
-        gotJSON();
-      break;
-    default:
-      if (json_depth > 0)
+      Serial.write(Serial1.read());
+    }
+    else
+    {
+      char c = Serial1.read();
+      switch (c)
       {
+      case '{':
+        json_depth++;
         json_buffer[json_cursor] = c;
         json_cursor++;
+        break;
+      case '}':
+        json_depth--;
+        json_buffer[json_cursor] = c;
+        json_cursor++;
+        if (json_depth == 0)
+          gotJSON();
+        break;
+      default:
+        if (json_depth >
+         0)
+        {
+          json_buffer[json_cursor] = c;
+          json_cursor++;
+        }
+        else
+          Serial.write(c);
       }
-      else
-        Serial.write(c);
     }*/
-    Serial.write(Serial1.read());
   }
 
   if (Serial.available())
