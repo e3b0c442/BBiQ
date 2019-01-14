@@ -24,6 +24,7 @@ filesystem:
 
 config_schema:
   - ["debug.level", 3]
+  - ["debug.stderr_uart", 1]
   - ["i2c.enable", true]
   - ["sys.atca.enable", true]
   - ["rpc.uart.fc_type", 0]
