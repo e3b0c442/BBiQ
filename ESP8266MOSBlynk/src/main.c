@@ -34,15 +34,22 @@ void updater_cb(void *arg __attribute__((unused)))
   }
 }
 
+/* this is necessary to avoid a crash due to a missing NULL check */
+void tester_resp_cb(const char *result __attribute__((unused)),
+                    int error_code __attribute__((unused)),
+                    const char *error_msg __attribute__((unused)),
+                    void *cb_arg __attribute__((unused))) {}
+
 void tester_cb(void *arg __attribute__((unused)))
 {
-  mgos_rpc_call("TEENSY", "test", "test", NULL, NULL);
+  mgos_rpc_call("TEENSY", "test", "null", tester_resp_cb, NULL);
 }
 
 enum mgos_app_init_result mgos_app_init(void)
 {
   blynk_connect(NULL);
 
+  mgos_sys_config_set_rpc_uart_uart_no(0);
   const struct mgos_config_rpc *sccfg = mgos_sys_config_get_rpc();
   struct mg_rpc_channel *uch = mg_rpc_channel_uart(&sccfg->uart, NULL);
   mg_rpc_add_channel(mgos_rpc_get_global(), mg_mk_str("TEENSY"), uch);
