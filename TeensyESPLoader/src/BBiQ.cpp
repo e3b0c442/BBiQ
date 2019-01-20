@@ -1,5 +1,9 @@
 #include <Arduino.h>
+#include "display.h"
+#include "event.h"
+#include "mode.h"
 #include "pins.h"
+#include "serial.h"
 
 #define ESP_BOOTROM_BITRATE 74480
 #define ESP_NORMAL_BITRATE 115200
@@ -8,14 +12,7 @@
 
 namespace
 {
-enum BBIQ_MODE
-{
-    BBIQ_MODE_BOOT,
-    BBIQ_MODE_PROGRAM,
-    BBIQ_MODE_NORMAL
-};
 
-enum BBIQ_MODE bbiqMode = BBIQ_MODE_BOOT;
 uint8_t resetState = HIGH;
 uint32_t resetLastChange = 0;
 bool resetting = false;
@@ -62,11 +59,6 @@ void reset()
 
 void setup()
 {
-    //start the Teensy<->USB serial
-    Serial.begin(115200);
-    while (!Serial && millis() < 2000)
-        ;
-
     //initial pin modes
     pinMode(ESP_RST, OUTPUT);
     pinMode(ESP_IO0, OUTPUT);
@@ -74,6 +66,11 @@ void setup()
 
     pinMode(MODE_SWITCH, INPUT_PULLUP);
     pinMode(RESET_BUTTON, INPUT_PULLUP);
+
+    //run power-on setup
+    eventSetup(); // must be first!
+    serialSetup();
+    displaySetup();
 
     //make sure reset is low
     digitalWrite(ESP_RST, LOW);

@@ -1,0 +1,13 @@
+#ifndef MODE_E3B0C442_H
+#define MODE_E3B0C442_H
+
+enum BBIQ_MODE
+{
+    BBIQ_MODE_BOOT,
+    BBIQ_MODE_PROGRAM,
+    BBIQ_MODE_NORMAL
+};
+
+enum BBIQ_MODE runMode = BBIQ_MODE_BOOT;
+
+#endif //MODE_E3B0C442_H
