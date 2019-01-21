@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "button.h"
 #include "display.h"
 #include "event.h"
 #include "mode.h"
@@ -59,6 +60,12 @@ void reset()
 
 void setup()
 {
+    //eventSetup must be first
+    eventSetup();
+    buttonSetup();
+    //runModeSetup must be last
+    runModeSetup();
+
     //initial pin modes
     pinMode(ESP_RST, OUTPUT);
     pinMode(ESP_IO0, OUTPUT);
@@ -68,7 +75,6 @@ void setup()
     pinMode(RESET_BUTTON, INPUT_PULLUP);
 
     //run power-on setup
-    eventSetup(); // must be first!
     serialSetup();
     displaySetup();
 
@@ -82,6 +88,7 @@ void setup()
 
 void loop()
 {
+    buttonLoop();
     uint32_t loopStart = millis();
 
     uint8_t rst = digitalRead(RESET_BUTTON);

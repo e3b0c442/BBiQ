@@ -31,7 +31,7 @@ enum class Pin : uint8_t
 
     BUTTON_2 = 22,
 
-    BUTTON_3 = 24,
+    BUTTON_1 = 24,
 
-    BUTTON_1
+    BUTTON_3
 };

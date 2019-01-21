@@ -1,14 +1,15 @@
-#ifndef EVENT_E3B0C442_H
-#define EVENT_E3B0C442_H
+#pragma once
 
 #include <Arduino.h>
 
 struct Event
 {
-    enum Type
+    enum class Type : uint8_t
     {
-        GENERIC_TYPE,
-        BUTTON_STATE_TYPE,
+        GENERIC,
+        RESET,
+        MODE,
+        BUTTON,
         //SERIAL_RX_EVENT,
         //BUTTON_DOWN_EVENT,
         //BUTTON_UP_EVENT,
@@ -33,5 +34,3 @@ typedef void (*EventHandler)(Event *);
 void eventSetup();
 void registerHandler(Event::Type type, EventHandler handler);
 void dispatch(Event *e);
-
-#endif // EVENT_E3B0C442_H

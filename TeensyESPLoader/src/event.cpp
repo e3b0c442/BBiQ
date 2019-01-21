@@ -9,12 +9,12 @@ struct _HandlerMap
     EventHandler *handlers;
 };
 
-_HandlerMap eventHandlers[Event::COUNT];
+_HandlerMap eventHandlers[(uint8_t)Event::Type::COUNT];
 }; // namespace
 
 void eventSetup()
 {
-    for (byte i = 0; i < Event::COUNT; i++)
+    for (uint8_t i = 0; i < (uint8_t)Event::Type::COUNT; i++)
     {
         eventHandlers[i].count = 0;
         eventHandlers[i].handlers = NULL;
@@ -23,7 +23,7 @@ void eventSetup()
 
 void registerHandler(Event::Type type, EventHandler handler)
 {
-    _HandlerMap *map = &eventHandlers[type];
+    _HandlerMap *map = &eventHandlers[(uint8_t)type];
     map->handlers = (EventHandler *)realloc(map->handlers, sizeof(EventHandler) * (map->count + 1));
     map->handlers[map->count] = handler;
     map->count++;
@@ -31,7 +31,7 @@ void registerHandler(Event::Type type, EventHandler handler)
 
 void dispatch(Event *e)
 {
-    _HandlerMap *map = &eventHandlers[e->type];
+    _HandlerMap *map = &eventHandlers[(uint8_t)e->type];
     for (int i = 0; i < map->count; i++)
     {
         map->handlers[i](e);
@@ -41,6 +41,6 @@ void dispatch(Event *e)
 
 Event::Event()
 {
-    type = GENERIC_TYPE;
+    type = Type::GENERIC;
     ts = millis();
 }

@@ -1,13 +1,17 @@
-#ifndef MODE_E3B0C442_H
-#define MODE_E3B0C442_H
+#pragma once
 
-enum BBIQ_MODE
+enum class RunMode
 {
-    BBIQ_MODE_BOOT,
-    BBIQ_MODE_PROGRAM,
-    BBIQ_MODE_NORMAL
+    BOOT,
+    PROGRAM,
+    NORMAL,
 };
 
-enum BBIQ_MODE runMode = BBIQ_MODE_BOOT;
+struct ModeEvent : Event
+{
+    RunMode mode;
+    ModeEvent(RunMode aMode) { type = Event::Type::MODE, mode = aMode; };
+};
 
-#endif //MODE_E3B0C442_H
+void runModeSetup();
+void runModeLoop();
