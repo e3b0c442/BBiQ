@@ -1,10 +1,5 @@
 #include <Arduino.h>
-#include "button.h"
-#include "display.h"
-#include "event.h"
-#include "mode.h"
 #include "pins.h"
-#include "serial.h"
 
 #define ESP_BOOTROM_BITRATE 74480
 #define ESP_NORMAL_BITRATE 115200
@@ -13,7 +8,14 @@
 
 namespace
 {
+enum BBIQ_MODE
+{
+    BBIQ_MODE_BOOT,
+    BBIQ_MODE_PROGRAM,
+    BBIQ_MODE_NORMAL
+};
 
+enum BBIQ_MODE bbiqMode = BBIQ_MODE_BOOT;
 uint8_t resetState = HIGH;
 uint32_t resetLastChange = 0;
 bool resetting = false;
@@ -60,11 +62,10 @@ void reset()
 
 void setup()
 {
-    //eventSetup must be first
-    eventSetup();
-    buttonSetup();
-    //runModeSetup must be last
-    runModeSetup();
+    //start the Teensy<->USB serial
+    Serial.begin(115200);
+    while (!Serial && millis() < 2000)
+        ;
 
     //initial pin modes
     pinMode(ESP_RST, OUTPUT);
@@ -73,10 +74,6 @@ void setup()
 
     pinMode(MODE_SWITCH, INPUT_PULLUP);
     pinMode(RESET_BUTTON, INPUT_PULLUP);
-
-    //run power-on setup
-    serialSetup();
-    displaySetup();
 
     //make sure reset is low
     digitalWrite(ESP_RST, LOW);
@@ -88,7 +85,6 @@ void setup()
 
 void loop()
 {
-    buttonLoop();
     uint32_t loopStart = millis();
 
     uint8_t rst = digitalRead(RESET_BUTTON);

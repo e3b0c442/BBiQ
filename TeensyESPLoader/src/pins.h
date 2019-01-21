@@ -1,37 +1,19 @@
+#define ESP_TXD 0
+#define ESP_UART0_TXD 0
+#define ESP_GPIO1 0
 
-#pragma once
+#define ESP_RXD 1
+#define ESP_UART0_RXD 1
+#define ESP_GPIO3 1
 
-enum class Pin : uint8_t
-{
-    ESP_TXD = 0,
-    ESP_UART0_TXD = 0,
-    ESP_GPIO1 = 0,
+#define ESP_IO0 2
+#define ESP_GPIO0 2
 
-    ESP_RXD,
-    ESP_UART0_RXD = 1,
-    ESP_GPIO3 = 1,
+#define ESP_RST 3
 
-    ESP_IO0,
-    ESP_GPIO0 = 2,
+#define MODE_SWITCH 6
 
-    ESP_RST,
+#define RESET_BUTTON 7
 
-    OLED_DC = 5,
-
-    ESP_IO2 = 9,
-    ESP_UART1_TXD = 9,
-
-    OLED_CS,
-
-    OLED_MOSI,
-
-    OLED_SCK = 13,
-
-    OLED_RST = 15,
-
-    BUTTON_2 = 22,
-
-    BUTTON_1 = 24,
-
-    BUTTON_3
-};
+#define ESP_IO2 9
+#define ESP_UART1_TXD 9
