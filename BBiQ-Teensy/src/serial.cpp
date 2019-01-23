@@ -33,6 +33,8 @@ void handler(Event *e)
     case Event::Type::MODE:
     {
         ModeEvent *me = (ModeEvent *)e;
+        currentMode = me->mode;
+
         switch (me->mode)
         {
         case RunMode::BOOT:
