@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "button.hpp"
+#include "display.hpp"
 #include "event.hpp"
 #include "mode.hpp"
 #include "reset.hpp"
@@ -12,6 +13,7 @@ void setup()
   resetSetup();
   modeSetup();
   buttonSetup();
+  displaySetup();
   reset(RunMode::NORMAL);
 }
 
@@ -22,4 +24,5 @@ void loop()
   resetLoop(&ts);
   modeLoop(&ts);
   buttonLoop(&ts);
+  displayLoop(&ts);
 }

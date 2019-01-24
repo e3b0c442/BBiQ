@@ -18,20 +18,20 @@ enum class Pin : uint8_t
 
     OLED_DC = 5,
 
-    ESP_IO2 = 9,
-    ESP_UART1_TXD = 9,
+    ESP_IO2 = 7,
+    ESP_UART1_TXD = 7,
 
-    OLED_CS,
+    OLED_CS = 10,
 
-    OLED_MOSI,
+    OLED_MOSI = 11,
 
     OLED_SCK = 13,
 
     OLED_RST = 15,
 
-    BUTTON_2 = 7, // breadboard; final = 22,
+    BUTTON_2 = 8, // breadboard; final = 22,
 
-    BUTTON_1 = 8, // breadboard; final = 24,
+    BUTTON_1 = 9, // breadboard; final = 24,
 
     BUTTON_3 = 6, // breadboard; final = 25,
 };

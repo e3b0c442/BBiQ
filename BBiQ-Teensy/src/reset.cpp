@@ -50,7 +50,7 @@ void handler(Event *e)
 
 void reset(RunMode mode)
 {
-    Serial2.end();
+    Serial3.end();
     pinMode((uint8_t)Pin::ESP_IO2, OUTPUT);
     digitalWrite((uint8_t)Pin::ESP_IO2, HIGH);
 

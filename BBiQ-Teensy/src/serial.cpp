@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <SPI.h>
 #include "button.hpp"
 #include "event.hpp"
 #include "mode.hpp"
@@ -69,7 +70,8 @@ void handler(Event *e)
             Serial.println("DEBUG: Mode change: NORMAL");
 #endif
             Serial1.end();
-            Serial2.begin(ESP_NORMAL_BAUD_RATE);
+            Serial3.begin(ESP_NORMAL_BAUD_RATE);
+            SPI.begin();
             Serial1.begin(ESP_NORMAL_BAUD_RATE);
             break;
         case RunMode::PROGRAM:
@@ -107,8 +109,8 @@ void serialLoop(uint32_t *ts __attribute__((unused)))
     switch (currentMode)
     {
     case RunMode::NORMAL:
-        while (Serial2.available())
-            Serial.write(Serial2.read());
+        while (Serial3.available())
+            Serial.write(Serial3.read());
     //fallthrough
     case RunMode::PROGRAM:
     case RunMode::BOOT:
