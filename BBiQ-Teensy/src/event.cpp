@@ -31,7 +31,7 @@ void registerHandler(Event::Type type, EventHandler handler)
 void dispatch(Event *e)
 {
 #ifdef DEBUG
-    Serial.printf("DEBUG: Event dispatch: %d\n", (uint8_t)e->type);
+    Serial.printf("DEBUG: [%10u] Event dispatch: %d\n", e->ts, e->type);
 #endif // DEBUG
     HandlerMap *map = &eventHandlers[(uint8_t)e->type];
     for (uint8_t i = 0; i < map->count; i++)

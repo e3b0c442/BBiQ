@@ -9,6 +9,7 @@ struct Event
         GENERIC,
         RESET,
         MODE,
+        BUTTON,
         COUNT
     };
 

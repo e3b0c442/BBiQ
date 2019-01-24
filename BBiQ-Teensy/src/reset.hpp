@@ -13,3 +13,4 @@ struct ResetEvent : Event
 
 void reset(RunMode mode);
 void resetSetup();
+void resetLoop(uint32_t *ts);

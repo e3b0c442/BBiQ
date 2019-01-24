@@ -29,9 +29,9 @@ enum class Pin : uint8_t
 
     OLED_RST = 15,
 
-    BUTTON_2 = 22,
+    BUTTON_2 = 7, // breadboard; final = 22,
 
-    BUTTON_1 = 24,
+    BUTTON_1 = 8, // breadboard; final = 24,
 
-    BUTTON_3
+    BUTTON_3 = 6, // breadboard; final = 25,
 };

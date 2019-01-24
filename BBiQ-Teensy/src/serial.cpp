@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "button.hpp"
 #include "event.hpp"
 #include "mode.hpp"
 #include "serial.hpp"
@@ -26,7 +27,25 @@ void logo() // because why not
 void handler(Event *e)
 {
 #ifdef DEBUG
-    Serial.printf("DEBUG: Received event %d\n", e->type);
+    switch (e->type)
+    {
+    case Event::Type::RESET:
+        Serial.printf("DEBUG: [%10u] Received reset event\n", e->ts);
+        break;
+    case Event::Type::MODE:
+    {
+        ModeEvent *me = (ModeEvent *)e;
+        Serial.printf("DEBUG: [%10u] Received mode event (mode %d)\n", e->ts, me->mode);
+        break;
+    }
+    case Event::Type::BUTTON:
+    {
+        ButtonEvent *be = (ButtonEvent *)e;
+        Serial.printf("DEBUG: [%10u] Received button event (state %d)\n", e->ts, be->state);
+        break;
+    }
+    default:;
+    }
 #endif
     switch (e->type)
     {
@@ -79,6 +98,7 @@ void serialSetup()
 
 #ifdef DEBUG
     registerHandler(Event::Type::RESET, &handler);
+    registerHandler(Event::Type::BUTTON, &handler);
 #endif
 }
 
