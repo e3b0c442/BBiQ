@@ -8,11 +8,6 @@
 
 namespace
 {
-/* placeholder code */
-uint32_t lastTick = 0;
-int tick = 0;
-/* end placeholder code */
-
 const uint32_t RESET_SPLASH_TIME = 2500;
 U8X8_SSD1306_128X32_UNIVISION_4W_HW_SPI oled(
     (uint8_t)Pin::OLED_CS, (uint8_t)Pin::OLED_DC, (uint8_t)Pin::OLED_RST);
@@ -98,12 +93,4 @@ void displaySetup()
 
 void displayLoop(uint32_t *ts)
 {
-    /* placeholder code 
-    if (!splashOn && int32_t(*ts) - int32_t(lastTick) > 1000)
-    {
-        tick++;
-        drawMainDisplay(tick, 000, 999, "Probe 1");
-        lastTick = *ts;
-    }
-     end placeholder code */
 }
