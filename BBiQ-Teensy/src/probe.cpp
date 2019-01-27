@@ -3,24 +3,21 @@
 #include "pins.hpp"
 #include "probe.hpp"
 
-uint8_t probeConnectedCount = 0;
-Probe probes[(uint8_t)Probe::ID::COUNT];
-
 namespace
 {
 // Steinhart-Hart constants for Thermoworks probes
 const float STEIN_A = 7.343140544e-4;
 const float STEIN_B = 2.157437229e-4;
 const float STEIN_C = 9.51568577e-8;
-const uint8_t ADC_BITS = 12;
+const uint8_t ADC_BITS = 10;
 const uint16_t ADC_RES = pow(2, ADC_BITS);
 const uint16_t ADC_LOW_THRESHOLD = ADC_RES / 50;
 const uint16_t ADC_HIGH_THRESHOLD = ADC_RES - ADC_RES / 50;
 const float STATIC_R = 10000.0;
 
 // Loop timers
-const uint32_t PROBES_POWERON_DELAY = 2500;
-const uint32_t PROBES_READ_INTERVAL = 2500;
+const uint32_t PROBES_POWERON_DELAY = 1000;
+const uint32_t PROBES_READ_INTERVAL = 1000;
 uint32_t PROBES_POWERED_ON_TIME;
 uint32_t PROBES_LAST_READ_TIME;
 
@@ -39,7 +36,11 @@ const Pin PROBE_PINS[] = {
     //Pin::PROBE_4,
 };
 
-uint32_t powerOnProbes()
+Probe probes[(uint8_t)Probe::ID::COUNT];
+Probe::ID active = Probe::ID::COUNT;
+
+uint32_t
+powerOnProbes()
 {
     digitalWrite((uint8_t)Pin::PROBE_POWER, HIGH);
     return millis();
@@ -64,8 +65,23 @@ void readProbe(Probe *probe)
         probe->temperature = 0;
         if (oldConn)
         {
-            probeConnectedCount--;
-            dispatch(new ProbeEvent(probe->id, Probe::Field::NA, ProbeEvent::Action::DISCONNECT));
+            Serial.printf("--DEBUG DEBUG: Disconnected!!!\n");
+            dispatch(new ProbeEvent(probe, Probe::Field::NA, ProbeEvent::Action::DISCONNECT));
+            if (active == probe->id)
+            {
+                Serial.printf("--DEBUG DEBUG: Active probe disconnected\n");
+                for (int i = 0; i < (uint8_t)Probe::ID::COUNT; i++)
+                {
+                    if (probes[i].connected)
+                    {
+                        active = probes[i].id;
+                        dispatch(new ProbeEvent(&probes[i], Probe::Field::NA, ProbeEvent::Action::SELECT));
+                        return;
+                    }
+                    active = Probe::ID::COUNT;
+                    dispatch(new ProbeEvent(NULL, Probe::Field::NA, ProbeEvent::Action::SELECT));
+                }
+            }
         }
         return;
     }
@@ -76,12 +92,16 @@ void readProbe(Probe *probe)
     probe->temperature = temp;
     if (!oldConn)
     {
-        probeConnectedCount++;
-        dispatch(new ProbeEvent(probe->id, Probe::Field::NA, ProbeEvent::Action::CONNECT));
+        dispatch(new ProbeEvent(probe, Probe::Field::NA, ProbeEvent::Action::CONNECT));
+        if (active == Probe::ID::COUNT)
+        {
+            active = probe->id;
+            dispatch(new ProbeEvent(probe, Probe::Field::NA, ProbeEvent::Action::SELECT));
+        }
     }
     if (probe->temperature != oldTemp)
     {
-        dispatch(new ProbeEvent(probe->id, Probe::Field::TEMP, ProbeEvent::Action::FIELD_CHANGE));
+        dispatch(new ProbeEvent(probe, Probe::Field::TEMP, ProbeEvent::Action::FIELD_CHANGE));
         if (probe->arm)
         {
             if (probe->temperature < probe->highAlarm - 1.0 && probe->temperature > probe->lowAlarm + 1.0)
@@ -89,7 +109,7 @@ void readProbe(Probe *probe)
 
             else if (probe->temperature > probe->highAlarm || probe->temperature < probe->lowAlarm)
             {
-                dispatch(new ProbeEvent(probe->id, Probe::Field::NA, ProbeEvent::Action::ALARM));
+                dispatch(new ProbeEvent(probe, Probe::Field::NA, ProbeEvent::Action::ALARM));
                 probe->arm = false;
             }
         }
@@ -151,7 +171,6 @@ void probeSetup()
     //Initialize the probe array
     analogReadRes(ADC_BITS);
     pinMode((uint8_t)Pin::PROBE_POWER, OUTPUT);
-    probeConnectedCount = 0;
 
     for (uint8_t i = 0; i < (uint8_t)Probe::ID::COUNT; i++)
     {

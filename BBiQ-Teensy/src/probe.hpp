@@ -35,9 +35,6 @@ struct Probe
     char name[16];
 };
 
-extern Probe probes[(uint8_t)Probe::ID::COUNT];
-extern uint8_t probeConnectedCount;
-
 struct ProbeEvent : Event
 {
     enum class Action : uint8_t
@@ -45,14 +42,15 @@ struct ProbeEvent : Event
         CONNECT,
         DISCONNECT,
         FIELD_CHANGE,
+        SELECT,
         ALARM,
     };
 
-    Probe::ID probe;
+    Probe *probe;
     Probe::Field field;
     Action action;
 
-    ProbeEvent(Probe::ID aProbe, Probe::Field aField, Action anAction)
+    ProbeEvent(Probe *aProbe, Probe::Field aField, Action anAction)
     {
         type = Event::Type::PROBE, probe = aProbe, field = aField, action = anAction;
     };

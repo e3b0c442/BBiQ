@@ -4,6 +4,7 @@
 #include <U8x8lib.h>
 #include "event.hpp"
 #include "pins.hpp"
+#include "probe.hpp"
 
 namespace
 {
@@ -17,13 +18,20 @@ U8X8_SSD1306_128X32_UNIVISION_4W_HW_SPI oled(
     (uint8_t)Pin::OLED_CS, (uint8_t)Pin::OLED_DC, (uint8_t)Pin::OLED_RST);
 
 uint32_t lastReset = 0;
-bool splashOn = true;
+Probe::ID selected = Probe::ID::COUNT;
 
 void drawBootDisplay()
 {
     oled.clear();
     oled.setFont(u8x8_font_8x13_1x2_r);
     oled.draw1x2String(6, 0, "BBiQ");
+}
+
+void drawNoProbeDisplay()
+{
+    oled.clear();
+    oled.drawString(4, 0, "No probe");
+    oled.drawString(4, 2, "connected");
 }
 
 void drawMainDisplay(int cur, int low, int high, const char *name)
@@ -53,8 +61,26 @@ void handler(Event *e)
     case Event::Type::RESET:
         lastReset = e->ts;
         drawBootDisplay();
-        splashOn = true;
         break;
+    case Event::Type::PROBE:
+    {
+        ProbeEvent *pe = (ProbeEvent *)e;
+        switch (pe->action)
+        {
+        case ProbeEvent::Action::SELECT:
+            if (pe->probe == NULL)
+                selected = Probe::ID::COUNT;
+            else
+                selected = pe->probe->id;
+            //intentional fallthrough
+        default:
+            if (selected == Probe::ID::COUNT)
+                drawNoProbeDisplay();
+            else if (selected == pe->probe->id)
+                drawMainDisplay(pe->probe->temperature, pe->probe->lowAlarm, pe->probe->highAlarm, pe->probe->name);
+        }
+        break;
+    }
     default:;
     }
 }
@@ -64,6 +90,7 @@ void displaySetup()
 {
     registerHandler(Event::Type::RESET, &handler);
     registerHandler(Event::Type::MODE, &handler);
+    registerHandler(Event::Type::PROBE, &handler);
     oled.begin();
     oled.setFlipMode(true);
     oled.setContrast(0);
@@ -71,18 +98,12 @@ void displaySetup()
 
 void displayLoop(uint32_t *ts)
 {
-    if (splashOn &&
-        int32_t(*ts) - int32_t(lastReset) > int32_t(RESET_SPLASH_TIME))
-    {
-        splashOn = false;
-    }
-
-    /* placeholder code */
+    /* placeholder code 
     if (!splashOn && int32_t(*ts) - int32_t(lastTick) > 1000)
     {
         tick++;
         drawMainDisplay(tick, 000, 999, "Probe 1");
         lastTick = *ts;
     }
-    /* end placeholder code */
+     end placeholder code */
 }

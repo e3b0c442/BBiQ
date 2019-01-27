@@ -49,7 +49,7 @@ void handler(Event *e)
     case Event::Type::PROBE:
     {
         ProbeEvent *pe = (ProbeEvent *)e;
-        Serial.printf("DEBUG: [%10u] Received probe event (probe %d, connected %d, temp %f\n", e->ts, pe->probe, probes[(uint8_t)pe->probe].connected, probes[(uint8_t)pe->probe].temperature);
+        Serial.printf("DEBUG: [%10u] Received probe event (probe %d, connected %d, temp %f\n", e->ts, pe->probe->id, pe->probe->connected, pe->probe->temperature);
         break;
     }
     default:;
