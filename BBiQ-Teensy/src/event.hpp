@@ -10,6 +10,7 @@ struct Event
         RESET,
         MODE,
         BUTTON,
+        PROBE,
         COUNT
     };
 

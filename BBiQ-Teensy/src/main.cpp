@@ -3,6 +3,7 @@
 #include "display.hpp"
 #include "event.hpp"
 #include "mode.hpp"
+#include "probe.hpp"
 #include "reset.hpp"
 #include "serial.hpp"
 
@@ -14,6 +15,7 @@ void setup()
   modeSetup();
   buttonSetup();
   displaySetup();
+  probeSetup();
   reset(RunMode::NORMAL);
 }
 
@@ -25,4 +27,5 @@ void loop()
   modeLoop(&ts);
   buttonLoop(&ts);
   displayLoop(&ts);
+  probeLoop(&ts);
 }

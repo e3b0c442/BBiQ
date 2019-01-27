@@ -29,6 +29,16 @@ enum class Pin : uint8_t
 
     OLED_RST = 15,
 
+    PROBE_POWER = 16,
+
+    PROBE_1 = 18,
+
+    PROBE_2 = 19,
+
+    PROBE_3 = 20,
+
+    PROBE_4 = 21,
+
     BUTTON_2 = 8, // breadboard; final = 22,
 
     BUTTON_1 = 9, // breadboard; final = 24,

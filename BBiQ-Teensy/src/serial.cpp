@@ -3,6 +3,7 @@
 #include "button.hpp"
 #include "event.hpp"
 #include "mode.hpp"
+#include "probe.hpp"
 #include "serial.hpp"
 
 namespace
@@ -43,6 +44,12 @@ void handler(Event *e)
     {
         ButtonEvent *be = (ButtonEvent *)e;
         Serial.printf("DEBUG: [%10u] Received button event (state %d)\n", e->ts, be->state);
+        break;
+    }
+    case Event::Type::PROBE:
+    {
+        ProbeEvent *pe = (ProbeEvent *)e;
+        Serial.printf("DEBUG: [%10u] Received probe event (probe %d, connected %d, temp %f\n", e->ts, pe->probe, probes[(uint8_t)pe->probe].connected, probes[(uint8_t)pe->probe].temperature);
         break;
     }
     default:;
@@ -101,6 +108,7 @@ void serialSetup()
 #ifdef DEBUG
     registerHandler(Event::Type::RESET, &handler);
     registerHandler(Event::Type::BUTTON, &handler);
+    registerHandler(Event::Type::PROBE, &handler);
 #endif
 }
 
