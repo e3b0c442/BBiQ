@@ -1,10 +1,15 @@
 #include <Arduino.h>
+#include <ADC.h>
+#include "button.hpp"
 #include "event.hpp"
 #include "pins.hpp"
 #include "probe.hpp"
 
 namespace
 {
+//ADC library
+ADC *adc = new ADC();
+
 // Steinhart-Hart constants for Thermoworks probes
 const float STEIN_A = 7.343140544e-4;
 const float STEIN_B = 2.157437229e-4;
@@ -16,7 +21,7 @@ const uint16_t ADC_HIGH_THRESHOLD = ADC_RES - ADC_RES / 50;
 const float STATIC_R = 10000.0;
 
 // Loop timers
-const uint32_t PROBES_POWERON_DELAY = 1000;
+const uint32_t PROBES_POWERON_DELAY = 1;
 const uint32_t PROBES_READ_INTERVAL = 1000;
 uint32_t PROBES_POWERED_ON_TIME;
 uint32_t PROBES_LAST_READ_TIME;
@@ -36,6 +41,8 @@ const Pin PROBE_PINS[] = {
     //Pin::PROBE_4,
 };
 
+ButtonState lastButtonState = ButtonState::ALL_UP;
+
 Probe probes[(uint8_t)Probe::ID::COUNT];
 Probe::ID active = Probe::ID::COUNT;
 
@@ -53,7 +60,7 @@ void powerOffProbes()
 
 void readProbe(Probe *probe)
 {
-    int x = analogRead((uint8_t)probe->pin);
+    int x = adc->analogRead((uint8_t)probe->pin);
 #ifdef DEBUG
     Serial.printf("Probe %d reading %d\n", probe->id, x);
 #endif
@@ -131,6 +138,72 @@ uint32_t readProbes()
     return millis();
 }
 
+void selectNextProbe()
+{
+    uint8_t index = (uint8_t)active + 1;
+    while (index != (uint8_t)active)
+    {
+        if (Probe::ID(index) == Probe::ID::COUNT)
+            index = 0;
+
+        if (probes[index].connected)
+        {
+            dispatch(new ProbeEvent(&probes[index], Probe::Field::NA, ProbeEvent::Action::SELECT));
+            active = Probe::ID(index);
+            return;
+        }
+        index++;
+    }
+}
+
+void selectPrevProbe()
+{
+    uint8_t index = (uint8_t)active - 1;
+    while (index != (uint8_t)active)
+    {
+        if (index == UINT8_MAX)
+            index = (uint8_t)Probe::ID::COUNT - 1;
+
+        if (probes[index].connected)
+        {
+            dispatch(new ProbeEvent(&probes[index], Probe::Field::NA, ProbeEvent::Action::SELECT));
+            active = Probe::ID(index);
+            return;
+        }
+        index--;
+    }
+}
+
+void handler(Event *e)
+{
+    switch (e->type)
+    {
+    case Event::Type::BUTTON:
+    {
+        ButtonEvent *be = (ButtonEvent *)e;
+        switch (be->state)
+        {
+        case ButtonState::ONE_DOWN:
+            if (lastButtonState == ButtonState::ALL_UP)
+            {
+                selectNextProbe();
+            }
+            break;
+        case ButtonState::TWO_DOWN:
+            if (lastButtonState == ButtonState::ALL_UP)
+            {
+                selectPrevProbe();
+            }
+            break;
+        default:;
+        }
+        lastButtonState = be->state;
+        break;
+    }
+    default:;
+    }
+}
+
 /*void handler(Event *e)
 {
     LocalInputEvent *li = (LocalInputEvent *)e;
@@ -169,7 +242,11 @@ uint32_t readProbes()
 void probeSetup()
 {
     //Initialize the probe array
-    analogReadRes(ADC_BITS);
+    adc->setResolution(ADC_BITS);
+    adc->setAveraging(16);
+    adc->setSamplingSpeed(ADC_SAMPLING_SPEED::VERY_LOW_SPEED);
+    adc->setConversionSpeed(ADC_CONVERSION_SPEED::VERY_LOW_SPEED);
+
     pinMode((uint8_t)Pin::PROBE_POWER, OUTPUT);
 
     for (uint8_t i = 0; i < (uint8_t)Probe::ID::COUNT; i++)
@@ -182,7 +259,9 @@ void probeSetup()
         probes[i].lowAlarm = 32.0;
         probes[i].highAlarm = 500.0;
         probes[i].arm = false;
+        pinMode((uint8_t)probes[i].pin, INPUT);
     }
+    registerHandler(Event::Type::BUTTON, &handler);
     //registerHandler(LOCAL_INPUT_EVENT, &probeEventHandler);
 }
 
