@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <SPI.h>
 #include "button.hpp"
 #include "event.hpp"
 #include "mode.hpp"
@@ -78,7 +77,6 @@ void handler(Event *e)
 #endif
             Serial1.end();
             Serial3.begin(ESP_NORMAL_BAUD_RATE);
-            SPI.begin();
             Serial1.begin(ESP_NORMAL_BAUD_RATE);
             break;
         case RunMode::PROGRAM:

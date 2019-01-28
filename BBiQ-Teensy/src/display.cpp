@@ -3,6 +3,7 @@
 #include <SPI.h>
 #include <U8x8lib.h>
 #include "event.hpp"
+#include "mode.hpp"
 #include "pins.hpp"
 #include "probe.hpp"
 
@@ -13,7 +14,9 @@ U8X8_SSD1306_128X32_UNIVISION_4W_HW_SPI oled(
     (uint8_t)Pin::OLED_CS, (uint8_t)Pin::OLED_DC, (uint8_t)Pin::OLED_RST);
 
 uint32_t lastReset = 0;
+bool splashOn = true;
 Probe::ID selected = Probe::ID::COUNT;
+RunMode currentMode = RunMode::BOOT;
 
 void drawBootDisplay()
 {
@@ -27,6 +30,13 @@ void drawNoProbeDisplay()
     oled.clear();
     oled.drawString(4, 0, "No probe");
     oled.drawString(4, 2, "connected");
+}
+
+void drawProgramDisplay()
+{
+    oled.clear();
+    oled.drawString(0, 0, "ESP8266 USB Prgm");
+    oled.drawString(1, 2, "Mode activated");
 }
 
 void drawMainDisplay(int cur, int low, int high, const char *name)
@@ -57,6 +67,12 @@ void handler(Event *e)
         lastReset = e->ts;
         drawBootDisplay();
         break;
+    case Event::Type::MODE:
+    {
+        ModeEvent *me = (ModeEvent *)e;
+        currentMode = me->mode;
+        break;
+    }
     case Event::Type::PROBE:
     {
         ProbeEvent *pe = (ProbeEvent *)e;
@@ -72,7 +88,8 @@ void handler(Event *e)
             if (selected == Probe::ID::COUNT)
                 drawNoProbeDisplay();
             else if (selected == pe->probe->id)
-                drawMainDisplay(pe->probe->temperature, pe->probe->lowAlarm, pe->probe->highAlarm, pe->probe->name);
+                if (!splashOn)
+                    drawMainDisplay(pe->probe->temperature, pe->probe->lowAlarm, pe->probe->highAlarm, pe->probe->name);
         }
         break;
     }
@@ -93,4 +110,22 @@ void displaySetup()
 
 void displayLoop(uint32_t *ts)
 {
+    if (splashOn && int32_t(*ts) - int32_t(lastReset) > int32_t(RESET_SPLASH_TIME))
+    {
+        switch (currentMode)
+        {
+        case RunMode::BOOT:
+            lastReset = *ts;
+            break;
+        case RunMode::PROGRAM:
+            drawProgramDisplay();
+            splashOn = false;
+            break;
+        case RunMode::NORMAL:
+            if (selected == Probe::ID::COUNT)
+                drawNoProbeDisplay();
+            splashOn = false;
+            break;
+        }
+    }
 }

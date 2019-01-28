@@ -15,16 +15,6 @@ struct Probe
         COUNT
     };
 
-    enum class Field : uint8_t
-    {
-        NAME,
-        TEMP,
-        LOW_SET,
-        HIGH_SET,
-        NA,
-        COUNT
-    };
-
     ID id;
     Pin pin;
     bool connected;
@@ -41,18 +31,18 @@ struct ProbeEvent : Event
     {
         CONNECT,
         DISCONNECT,
+        TEMP_CHANGE,
         FIELD_CHANGE,
         SELECT,
         ALARM,
     };
 
     Probe *probe;
-    Probe::Field field;
     Action action;
 
-    ProbeEvent(Probe *aProbe, Probe::Field aField, Action anAction)
+    ProbeEvent(Probe *aProbe, Action anAction)
     {
-        type = Event::Type::PROBE, probe = aProbe, field = aField, action = anAction;
+        type = Event::Type::PROBE, probe = aProbe, action = anAction;
     };
 };
 

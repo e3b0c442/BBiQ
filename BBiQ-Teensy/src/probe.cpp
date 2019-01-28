@@ -2,6 +2,7 @@
 #include <ADC.h>
 #include "button.hpp"
 #include "event.hpp"
+#include "mode.hpp"
 #include "pins.hpp"
 #include "probe.hpp"
 
@@ -42,7 +43,7 @@ const Pin PROBE_PINS[] = {
 };
 
 ButtonState lastButtonState = ButtonState::ALL_UP;
-
+RunMode currentMode;
 Probe probes[(uint8_t)Probe::ID::COUNT];
 Probe::ID active = Probe::ID::COUNT;
 
@@ -73,7 +74,7 @@ void readProbe(Probe *probe)
         if (oldConn)
         {
             Serial.printf("--DEBUG DEBUG: Disconnected!!!\n");
-            dispatch(new ProbeEvent(probe, Probe::Field::NA, ProbeEvent::Action::DISCONNECT));
+            dispatch(new ProbeEvent(probe, ProbeEvent::Action::DISCONNECT));
             if (active == probe->id)
             {
                 Serial.printf("--DEBUG DEBUG: Active probe disconnected\n");
@@ -82,11 +83,11 @@ void readProbe(Probe *probe)
                     if (probes[i].connected)
                     {
                         active = probes[i].id;
-                        dispatch(new ProbeEvent(&probes[i], Probe::Field::NA, ProbeEvent::Action::SELECT));
+                        dispatch(new ProbeEvent(&probes[i], ProbeEvent::Action::SELECT));
                         return;
                     }
                     active = Probe::ID::COUNT;
-                    dispatch(new ProbeEvent(NULL, Probe::Field::NA, ProbeEvent::Action::SELECT));
+                    dispatch(new ProbeEvent(NULL, ProbeEvent::Action::SELECT));
                 }
             }
         }
@@ -99,16 +100,16 @@ void readProbe(Probe *probe)
     probe->temperature = temp;
     if (!oldConn)
     {
-        dispatch(new ProbeEvent(probe, Probe::Field::NA, ProbeEvent::Action::CONNECT));
+        dispatch(new ProbeEvent(probe, ProbeEvent::Action::CONNECT));
         if (active == Probe::ID::COUNT)
         {
             active = probe->id;
-            dispatch(new ProbeEvent(probe, Probe::Field::NA, ProbeEvent::Action::SELECT));
+            dispatch(new ProbeEvent(probe, ProbeEvent::Action::SELECT));
         }
     }
     if (probe->temperature != oldTemp)
     {
-        dispatch(new ProbeEvent(probe, Probe::Field::TEMP, ProbeEvent::Action::FIELD_CHANGE));
+        dispatch(new ProbeEvent(probe, ProbeEvent::Action::TEMP_CHANGE));
         if (probe->arm)
         {
             if (probe->temperature < probe->highAlarm - 1.0 && probe->temperature > probe->lowAlarm + 1.0)
@@ -116,7 +117,7 @@ void readProbe(Probe *probe)
 
             else if (probe->temperature > probe->highAlarm || probe->temperature < probe->lowAlarm)
             {
-                dispatch(new ProbeEvent(probe, Probe::Field::NA, ProbeEvent::Action::ALARM));
+                dispatch(new ProbeEvent(probe, ProbeEvent::Action::ALARM));
                 probe->arm = false;
             }
         }
@@ -132,9 +133,8 @@ void readProbe(Probe *probe)
 uint32_t readProbes()
 {
     for (uint8_t i = 0; i < (uint8_t)Probe::ID::COUNT; i++)
-    {
         readProbe(&probes[i]);
-    }
+
     return millis();
 }
 
@@ -148,7 +148,7 @@ void selectNextProbe()
 
         if (probes[index].connected)
         {
-            dispatch(new ProbeEvent(&probes[index], Probe::Field::NA, ProbeEvent::Action::SELECT));
+            dispatch(new ProbeEvent(&probes[index], ProbeEvent::Action::SELECT));
             active = Probe::ID(index);
             return;
         }
@@ -166,7 +166,7 @@ void selectPrevProbe()
 
         if (probes[index].connected)
         {
-            dispatch(new ProbeEvent(&probes[index], Probe::Field::NA, ProbeEvent::Action::SELECT));
+            dispatch(new ProbeEvent(&probes[index], ProbeEvent::Action::SELECT));
             active = Probe::ID(index);
             return;
         }
@@ -185,21 +185,40 @@ void handler(Event *e)
         {
         case ButtonState::ONE_DOWN:
             if (lastButtonState == ButtonState::ALL_UP)
-            {
                 selectNextProbe();
-            }
+
             break;
         case ButtonState::TWO_DOWN:
             if (lastButtonState == ButtonState::ALL_UP)
-            {
                 selectPrevProbe();
-            }
+
             break;
         default:;
         }
         lastButtonState = be->state;
         break;
     }
+    case Event::Type::MODE:
+    {
+        ModeEvent *me = (ModeEvent *)e;
+        currentMode = me->mode;
+        break;
+    }
+    case Event::Type::RESET:
+        digitalWrite((uint8_t)Pin::PROBE_POWER, LOW);
+        PROBES_POWERED_ON_TIME = e->ts;
+        PROBES_LAST_READ_TIME = e->ts;
+        active = Probe::ID::COUNT;
+        for (uint8_t i = 0; i < (uint8_t)Probe::ID::COUNT; i++)
+        {
+            strcpy(probes[i].name, PROBE_DEFAULT_NAMES[i]);
+            probes[i].connected = false;
+            probes[i].lowAlarm = 32.0;
+            probes[i].highAlarm = 500.0;
+            probes[i].arm = false;
+            pinMode((uint8_t)probes[i].pin, INPUT);
+            dispatch(new ProbeEvent(&probes[i], ProbeEvent::Action::FIELD_CHANGE));
+        }
     default:;
     }
 }
@@ -261,20 +280,24 @@ void probeSetup()
         probes[i].arm = false;
         pinMode((uint8_t)probes[i].pin, INPUT);
     }
+    registerHandler(Event::Type::RESET, &handler);
+    registerHandler(Event::Type::MODE, &handler);
     registerHandler(Event::Type::BUTTON, &handler);
-    //registerHandler(LOCAL_INPUT_EVENT, &probeEventHandler);
 }
 
 void probeLoop(uint32_t *ts)
 {
-    if (int32_t(PROBES_POWERED_ON_TIME) - int32_t(PROBES_LAST_READ_TIME) > int32_t(0))
+    if (currentMode == RunMode::NORMAL)
     {
-        if (int32_t(*ts) - int32_t(PROBES_POWERED_ON_TIME) > int32_t(PROBES_POWERON_DELAY))
+        if (int32_t(PROBES_POWERED_ON_TIME) - int32_t(PROBES_LAST_READ_TIME) > int32_t(0))
         {
-            PROBES_LAST_READ_TIME = readProbes();
-            powerOffProbes();
+            if (int32_t(*ts) - int32_t(PROBES_POWERED_ON_TIME) > int32_t(PROBES_POWERON_DELAY))
+            {
+                PROBES_LAST_READ_TIME = readProbes();
+                powerOffProbes();
+            }
         }
+        else if (int32_t(*ts) - int32_t(PROBES_LAST_READ_TIME) > int32_t(PROBES_READ_INTERVAL))
+            PROBES_POWERED_ON_TIME = powerOnProbes();
     }
-    else if (int32_t(*ts) - int32_t(PROBES_LAST_READ_TIME) > int32_t(PROBES_READ_INTERVAL))
-        PROBES_POWERED_ON_TIME = powerOnProbes();
 }
