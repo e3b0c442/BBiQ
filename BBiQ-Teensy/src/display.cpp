@@ -22,12 +22,13 @@ void drawBootDisplay()
 {
     oled.clear();
     oled.setFont(u8x8_font_8x13_1x2_r);
-    oled.draw1x2String(6, 0, "BBiQ");
+    oled.draw1x2String(0, 0, "BBiQ");
 }
 
 void drawNoProbeDisplay()
 {
     oled.clear();
+    oled.setFont(u8x8_font_8x13_1x2_r);
     oled.drawString(4, 0, "No probe");
     oled.drawString(4, 2, "connected");
 }
@@ -35,6 +36,7 @@ void drawNoProbeDisplay()
 void drawProgramDisplay()
 {
     oled.clear();
+    oled.setFont(u8x8_font_8x13_1x2_r);
     oled.drawString(0, 0, "ESP8266 USB Prgm");
     oled.drawString(1, 2, "Mode activated");
 }
@@ -106,6 +108,7 @@ void displaySetup()
     oled.begin();
     oled.setFlipMode(true);
     oled.setContrast(0);
+    drawBootDisplay();
 }
 
 void displayLoop(uint32_t *ts)

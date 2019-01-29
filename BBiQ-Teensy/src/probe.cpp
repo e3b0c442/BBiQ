@@ -140,6 +140,8 @@ uint32_t readProbes()
 
 void selectNextProbe()
 {
+    if (active == Probe::ID::COUNT)
+        return;
     uint8_t index = (uint8_t)active + 1;
     while (index != (uint8_t)active)
     {
@@ -158,6 +160,8 @@ void selectNextProbe()
 
 void selectPrevProbe()
 {
+    if (active == Probe::ID::COUNT)
+        return;
     uint8_t index = (uint8_t)active - 1;
     while (index != (uint8_t)active)
     {
