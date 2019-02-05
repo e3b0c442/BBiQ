@@ -23,6 +23,10 @@ struct Probe
     int highAlarm;
     bool arm;
     char name[16];
+
+    void read();
+    Probe *next();
+    Probe *prev();
 };
 
 struct ProbeEvent : Event
@@ -40,11 +44,11 @@ struct ProbeEvent : Event
     Probe *probe;
     Action action;
 
-    ProbeEvent(Probe *aProbe, Action anAction)
-    {
-        type = Event::Type::PROBE, probe = aProbe, action = anAction;
-    };
+    ProbeEvent(Probe *aProbe, Action anAction) { type = Event::Type::PROBE, probe = aProbe, action = anAction; };
+#ifdef DEBUG
+    void log(Stream &);
+#endif // DEBUG
 };
 
 void probeSetup();
-void probeLoop(uint32_t *ts);
+void probeLoop(uint32_t ts);

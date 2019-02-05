@@ -6,6 +6,7 @@
 #include "probe.hpp"
 #include "reset.hpp"
 #include "serial.hpp"
+#include "ui.hpp"
 
 void setup()
 {
@@ -14,18 +15,21 @@ void setup()
   resetSetup();
   modeSetup();
   buttonSetup();
-  displaySetup();
   probeSetup();
+  uiSetup();
+  displaySetup();
+
   reset(RunMode::NORMAL);
 }
 
 void loop()
 {
   uint32_t ts = millis();
-  serialLoop(&ts);
-  resetLoop(&ts);
-  modeLoop(&ts);
-  buttonLoop(&ts);
-  displayLoop(&ts);
-  probeLoop(&ts);
+  serialLoop(ts);
+  resetLoop(ts);
+  modeLoop(ts);
+  buttonLoop(ts);
+  probeLoop(ts);
+  uiLoop(ts);
+  displayLoop(ts);
 }

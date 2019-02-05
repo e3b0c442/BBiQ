@@ -22,38 +22,15 @@ void logo() // because why not
     Serial.println(" | _ ) _ |_)/ _ \\");
     Serial.println(" | _ \\ _ \\ | (_) |");
     Serial.println(" |___/___/_|\\__\\_\\");
-    Serial.println("BBiQ v0.1 - 2019-01-22");
+    Serial.println("BBiQ v0.1 - 2019-02-03");
 }
 
 void handler(Event *e)
 {
 #ifdef DEBUG
-    switch (e->type)
-    {
-    case Event::Type::RESET:
-        Serial.printf("DEBUG: [%10u] Received reset event\n", e->ts);
-        break;
-    case Event::Type::MODE:
-    {
-        ModeEvent *me = (ModeEvent *)e;
-        Serial.printf("DEBUG: [%10u] Received mode event (mode %d)\n", e->ts, me->mode);
-        break;
-    }
-    case Event::Type::BUTTON:
-    {
-        ButtonEvent *be = (ButtonEvent *)e;
-        Serial.printf("DEBUG: [%10u] Received button event (state %d)\n", e->ts, be->state);
-        break;
-    }
-    case Event::Type::PROBE:
-    {
-        ProbeEvent *pe = (ProbeEvent *)e;
-        Serial.printf("DEBUG: [%10u] Received probe event (probe %d, connected %d, temp %f\n", e->ts, pe->probe->id, pe->probe->connected, pe->probe->temperature);
-        break;
-    }
-    default:;
-    }
-#endif
+    e->log(Serial);
+#endif // DEBUG
+
     switch (e->type)
     {
     case Event::Type::MODE:
@@ -64,25 +41,16 @@ void handler(Event *e)
         switch (me->mode)
         {
         case RunMode::BOOT:
-#ifdef DEBUG
-            Serial.println("DEBUG: Mode change: BOOT");
-#endif
             logo();
             Serial1.end();
             Serial1.begin(ESP_BOOT_BAUD_RATE);
             break;
         case RunMode::NORMAL:
-#ifdef DEBUG
-            Serial.println("DEBUG: Mode change: NORMAL");
-#endif
             Serial1.end();
             Serial3.begin(ESP_NORMAL_BAUD_RATE);
             Serial1.begin(ESP_NORMAL_BAUD_RATE);
             break;
         case RunMode::PROGRAM:
-#ifdef DEBUG
-            Serial.println("DEBUG: Mode change: PROGRAM");
-#endif
             Serial1.end();
             Serial1.begin(ESP_NORMAL_BAUD_RATE);
             break;
@@ -102,15 +70,17 @@ void serialSetup()
     Serial1.begin(ESP_NORMAL_BAUD_RATE);
 
     registerHandler(Event::Type::MODE, &handler);
+    logo();
 
 #ifdef DEBUG
-    registerHandler(Event::Type::RESET, &handler);
+    registerHandler(Event::Type::UI, &handler);
     registerHandler(Event::Type::BUTTON, &handler);
+    registerHandler(Event::Type::RESET, &handler);
     registerHandler(Event::Type::PROBE, &handler);
 #endif
 }
 
-void serialLoop(uint32_t *ts __attribute__((unused)))
+void serialLoop(uint32_t ts __attribute__((unused)))
 {
     switch (currentMode)
     {

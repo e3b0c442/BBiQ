@@ -29,7 +29,7 @@ struct Button
     bool reading;
     uint32_t lastChange;
 
-    void read(uint32_t *);
+    void read(uint32_t);
 };
 
 const Button::ID BUTTON_IDS[] = {
@@ -38,12 +38,12 @@ const Button::ID BUTTON_IDS[] = {
     Button::BUTTON_2,
 };
 
-void Button::read(uint32_t *ts)
+void Button::read(uint32_t ts)
 {
     bool aReading = digitalRead((uint8_t)pin);
     if (aReading != reading)
     {
-        lastChange = *ts;
+        lastChange = ts;
         reading = aReading;
     }
     if (reading != state)
@@ -64,12 +64,11 @@ ButtonState getState(Button *buttons, uint8_t len)
     return newState;
 }
 
-void readButtons(Button *buttons, uint8_t len, uint32_t *ts)
+void readButtons(Button *buttons, uint8_t len, uint32_t ts)
 {
     for (uint8_t i = 0; i < len; i++)
-    {
         buttons[i].read(ts);
-    }
+
     ButtonState newState = getState(buttons, len);
     if (newState != state)
     {
@@ -92,7 +91,26 @@ void buttonSetup()
     }
 }
 
-void buttonLoop(uint32_t *ts)
+void buttonLoop(uint32_t ts)
 {
     readButtons(buttons, Button::COUNT, ts);
 }
+
+#ifdef DEBUG
+void ButtonEvent::log(Stream &s)
+{
+    const char *states[] = {
+        "ALL_DOWN",
+        "TWO_THREE_DOWN",
+        "ONE_THREE_DOWN",
+        "THREE_DOWN",
+        "ONE_TWO_DOWN",
+        "TWO_DOWN",
+        "ONE_DOWN",
+        "ALL_UP",
+    };
+
+    Event::prelog(s);
+    s.printf("TYPE: BUTTON; STATE: %s\n", states[(uint8_t)state]);
+}
+#endif // DEBUG

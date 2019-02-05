@@ -82,12 +82,26 @@ void resetSetup()
     digitalWrite((uint8_t)Pin::ESP_RST, LOW);
 }
 
-void resetLoop(uint32_t *ts)
+void resetLoop(uint32_t ts)
 {
     if (!triggered &&
         (lastState == RESET_STATE_NORMAL || lastState == RESET_STATE_PROGRAM) &&
-        int32_t(*ts) - int32_t(RESET_DELAY) > int32_t(lastStateChange))
+        int32_t(ts) - int32_t(RESET_DELAY) > int32_t(lastStateChange))
     {
         triggered = true;
     }
 }
+
+#ifdef DEBUG
+void ResetEvent::log(Stream &s)
+{
+    const char *modes[] = {
+        "BOOT",
+        "PROGRAM",
+        "NORMAL",
+    };
+
+    Event::prelog(s);
+    s.printf("TYPE: RESET; NEXT MODE: %s\n", modes[(uint8_t)mode]);
+}
+#endif // DEBUG

@@ -11,6 +11,7 @@ struct Event
         MODE,
         BUTTON,
         PROBE,
+        UI,
         COUNT
     };
 
@@ -18,6 +19,11 @@ struct Event
     uint32_t ts;
 
     Event() { type = Type::GENERIC, ts = millis(); };
+#ifdef DEBUG
+    void prelog(Stream &);
+    virtual void log(Stream &);
+    virtual ~Event() {};
+#endif // DEBUG
 };
 
 typedef void (*EventHandler)(Event *e);

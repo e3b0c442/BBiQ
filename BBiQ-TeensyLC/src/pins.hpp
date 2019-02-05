@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <Arduino.h>
+
 enum class Pin : uint8_t
 {
     ESP_TXD = 0,

@@ -35,11 +35,25 @@ void modeSetup()
     registerHandler(Event::Type::RESET, &handler);
 }
 
-void modeLoop(uint32_t *ts)
+void modeLoop(uint32_t ts)
 {
-    if (booting && (int32_t)*ts - (int32_t)bootTime > (int32_t)BOOT_DURATION)
+    if (booting && (int32_t)ts - (int32_t)bootTime > (int32_t)BOOT_DURATION)
     {
         booting = false;
         dispatch(new ModeEvent(nextMode));
     }
 }
+
+#ifdef DEBUG
+void ModeEvent::log(Stream &s)
+{
+    const char *modes[] = {
+        "BOOT",
+        "PROGRAM",
+        "NORMAL",
+    };
+
+    Event::prelog(s);
+    s.printf("TYPE: MODE; MODE: %s\n", modes[(uint8_t)mode]);
+}
+#endif // DEBUG

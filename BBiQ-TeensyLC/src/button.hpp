@@ -31,7 +31,11 @@ struct ButtonEvent : Event
 {
     ButtonState state;
     ButtonEvent(ButtonState aState) { type = Event::Type::BUTTON, state = aState; };
+
+#ifdef DEBUG
+    void log(Stream &s);
+#endif // DEBUG
 };
 
 void buttonSetup();
-void buttonLoop(uint32_t *ts);
+void buttonLoop(uint32_t ts);

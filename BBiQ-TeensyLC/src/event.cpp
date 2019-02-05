@@ -40,3 +40,16 @@ void dispatch(Event *e)
     }
     delete e;
 }
+
+#ifdef DEBUG
+void Event::prelog(Stream &s)
+{
+    s.printf("DEBUG: [%10u] EVENT ", ts);
+}
+
+void Event::log(Stream &s)
+{
+    prelog(s);
+    s.println("TYPE: GENERIC");
+}
+#endif // DEBUG
