@@ -28,6 +28,7 @@ config_schema:
   - ["i2c.enable", true]
   - ["sys.atca.enable", true]
   - ["rpc.uart.fc_type", 0]
+  - ["rpc.uart.dst", "TEENSY"]
   - ["blynk.enable", "b", true, { title: "Blynk enable" }]
   - ["blynk.server", "s", "blynk.e3b0c442.io:8080", { title: "Blynk server" }]
   - [

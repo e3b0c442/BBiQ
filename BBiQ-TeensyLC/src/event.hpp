@@ -12,6 +12,7 @@ struct Event
         BUTTON,
         PROBE,
         UI,
+        UART,
         COUNT
     };
 
@@ -22,7 +23,7 @@ struct Event
 #ifdef DEBUG
     void prelog(Stream &);
     virtual void log(Stream &);
-    virtual ~Event() {};
+    virtual ~Event(){};
 #endif // DEBUG
 };
 

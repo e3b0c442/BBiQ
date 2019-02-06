@@ -46,7 +46,6 @@ void handler(Event *e)
             {
                 if (selected != NULL)
                 {
-                    Serial.println("---DEBUG--- CHECKING NEXT");
                     Probe *p = selected->next();
                     if (p != NULL)
                     {
@@ -76,7 +75,6 @@ void handler(Event *e)
     }
     case Event::Type::MODE:
     {
-        Serial.println("---DEBUG--- UI handler got mode event");
         Screen sc = screen;
         ModeEvent *me = (ModeEvent *)e;
         switch (me->mode)
@@ -85,7 +83,6 @@ void handler(Event *e)
             lastBoot = e->ts;
             screen = Screen::SPLASH;
             sc = Screen::COUNT;
-            Serial.println("---DEBUG--- UI handler sending splash screen");
             dispatch(new UIEvent(Screen::SPLASH, powerSave, selected));
             return;
         case RunMode::PROGRAM:

@@ -143,10 +143,8 @@ void Probe::read()
         connected = false;
         temperature = 0;
         if (oldConn)
-        {
-            Serial.printf("---DEBUG DEBUG: Disconnected!!!\n");
             dispatch(new ProbeEvent(this, ProbeEvent::Action::DISCONNECT));
-        }
+
         return;
     }
     float res = float(STATIC_R) / ((float(ADC_RES - 1) / float(x - 1)) - 1);
@@ -183,11 +181,9 @@ void Probe::read()
 Probe *Probe::next()
 {
     Probe *pr = this;
-    Serial.printf("---DEBUG--- MY ID %d\n", id);
     do
     {
         uint8_t nextID = ((uint8_t)pr->id) + 1;
-        Serial.printf("---DEBUG--- NEXT CHECKING %d\n", nextID);
         if ((Probe::ID)nextID == Probe::ID::COUNT)
             nextID = 0;
 

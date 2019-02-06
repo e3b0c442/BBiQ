@@ -153,7 +153,6 @@ void drawProbe(Probe *probe)
 
 void handler(Event *e)
 {
-    Serial.println("---DEBUG--- got display event");
     UIEvent *ue = (UIEvent *)e;
     if (ue->powerSave)
     {
@@ -161,7 +160,6 @@ void handler(Event *e)
         return;
     }
 
-    Serial.println("---DEBUG--- should ok");
     oled.setPowerSave(false);
     switch (ue->screen)
     {

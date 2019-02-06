@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include "button.hpp"
 #include "event.hpp"
 #include "mode.hpp"
@@ -12,6 +13,8 @@ const uint32_t ESP_BOOT_BAUD_RATE = 74480;
 const uint32_t ESP_NORMAL_BAUD_RATE = 115200;
 
 RunMode currentMode = RunMode::BOOT;
+char buf[UART_BUFFER_SIZE];
+uint8_t cursor = 0;
 
 void logo() // because why not
 {
@@ -80,14 +83,31 @@ void serialSetup()
 #endif
 }
 
-void serialLoop(uint32_t ts __attribute__((unused)))
+void serialLoop(uint32_t ts)
 {
     switch (currentMode)
     {
     case RunMode::NORMAL:
         while (Serial3.available())
             Serial.write(Serial3.read());
-    //fallthrough
+        while (Serial1.available())
+        {
+            //Serial.write(Serial1.read());
+            buf[cursor] = Serial1.read();
+            if (buf[cursor] == '\n')
+            {
+                buf[cursor] = '\0';
+#ifdef DEBUG
+                Serial.printf("DEBUG: [%10u] UART \"%s\"\n", ts, buf);
+#endif
+                dispatch(new SerialEvent(buf, cursor));
+                cursor = 0;
+                memset(&buf, 0, UART_BUFFER_SIZE);
+                continue;
+            }
+            cursor++;
+        }
+        break;
     case RunMode::PROGRAM:
     case RunMode::BOOT:
         while (Serial1.available())

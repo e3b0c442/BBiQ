@@ -5,6 +5,7 @@
 #include "mode.hpp"
 #include "probe.hpp"
 #include "reset.hpp"
+#include "rpc.hpp"
 #include "serial.hpp"
 #include "ui.hpp"
 
@@ -12,6 +13,7 @@ void setup()
 {
   eventSetup();
   serialSetup();
+  rpcSetup();
   resetSetup();
   modeSetup();
   buttonSetup();
