@@ -151,17 +151,17 @@ void drawProbe(Probe *probe)
     oled.drawString(12, 2, tmp);
 }
 
-void handler(Event *e)
+void handler(Event &e)
 {
-    UIEvent *ue = (UIEvent *)e;
-    if (ue->powerSave)
+    UIEvent &ue = (UIEvent &)e;
+    if (ue.powerSave)
     {
         oled.setPowerSave(true);
         return;
     }
 
     oled.setPowerSave(false);
-    switch (ue->screen)
+    switch (ue.screen)
     {
     case Screen::SPLASH:
         drawSplash();
@@ -170,10 +170,10 @@ void handler(Event *e)
         drawProgram();
         break;
     case Screen::PROBE:
-        if (ue->probe == NULL)
+        if (ue.probe == NULL)
             drawNoProbe();
         else
-            drawProbe(ue->probe);
+            drawProbe(ue.probe);
         break;
     default:;
     };

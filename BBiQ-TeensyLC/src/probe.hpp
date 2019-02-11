@@ -41,13 +41,23 @@ struct ProbeEvent : Event
         ALARM,
     };
 
-    Probe *probe;
+    Probe &probe;
     Action action;
 
-    ProbeEvent(Probe *aProbe, Action anAction) { type = Event::Type::PROBE, probe = aProbe, action = anAction; };
+    ProbeEvent(Probe &probe, Action action) : probe(probe), action(action) { type = Event::Type::PROBE; };
 #ifdef DEBUG
     void log(Stream &);
 #endif // DEBUG
+};
+
+struct InternalTempEvent : Event
+{
+    int16_t temp;
+
+    InternalTempEvent(int16_t temp) : temp(temp) { type = Event::Type::INT_TEMP; };
+#ifdef DEBUG
+    void log(Stream &);
+#endif
 };
 
 void probeSetup();

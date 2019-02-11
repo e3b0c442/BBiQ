@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "button.hpp"
+#include "buzzer.hpp"
 #include "display.hpp"
 #include "event.hpp"
 #include "mode.hpp"
@@ -20,6 +21,7 @@ void setup()
   probeSetup();
   uiSetup();
   displaySetup();
+  buzzerSetup();
 
   reset(RunMode::NORMAL);
 }
@@ -34,4 +36,5 @@ void loop()
   probeLoop(ts);
   uiLoop(ts);
   displayLoop(ts);
+  buzzerLoop(ts);
 }

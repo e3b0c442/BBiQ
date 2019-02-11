@@ -15,13 +15,13 @@ ButtonState lastState;
 uint32_t lastStateChange;
 bool triggered;
 
-void handler(Event *e)
+void handler(Event &e)
 {
-    switch (e->type)
+    switch (e.type)
     {
     case Event::Type::BUTTON:
     {
-        ButtonEvent *be = (ButtonEvent *)e;
+        ButtonEvent &be = (ButtonEvent &)e;
         if (triggered)
         {
             triggered = false;
@@ -36,10 +36,10 @@ void handler(Event *e)
             default:;
             }
         }
-        if (lastState != be->state)
+        if (lastState != be.state)
         {
-            lastState = be->state;
-            lastStateChange = be->ts;
+            lastState = be.state;
+            lastStateChange = be.ts;
         }
         break;
     }

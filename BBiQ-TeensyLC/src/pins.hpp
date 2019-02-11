@@ -29,9 +29,13 @@ enum class Pin : uint8_t
 
     OLED_SCK = 13,
 
+    INT_TEMP = 14,
+
     OLED_RST = 15,
 
     PROBE_POWER = 16,
+
+    BUZZER = 17,
 
     PROBE_1 = 18,
 

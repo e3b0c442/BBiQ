@@ -27,6 +27,7 @@ const uint32_t PROBES_READ_INTERVAL = 1000;
 
 uint32_t poweredOnTime = 0;
 uint32_t lastReadTime = 0;
+int16_t internalTemp = 0;
 
 // Probe count and default names
 const char PROBE_DEFAULT_NAMES[(uint8_t)Probe::ID::COUNT][16] = {
@@ -66,20 +67,20 @@ uint32_t readProbes()
     return millis();
 }
 
-void handler(Event *e)
+void handler(Event &e)
 {
-    switch (e->type)
+    switch (e.type)
     {
     case Event::Type::MODE:
     {
-        ModeEvent *me = (ModeEvent *)e;
-        currentMode = me->mode;
+        ModeEvent &me = (ModeEvent &)e;
+        currentMode = me.mode;
         break;
     }
     case Event::Type::RESET:
         digitalWrite((uint8_t)Pin::PROBE_POWER, LOW);
-        poweredOnTime = e->ts;
-        lastReadTime = e->ts;
+        poweredOnTime = e.ts;
+        lastReadTime = e.ts;
 
         for (uint8_t i = 0; i < (uint8_t)Probe::ID::COUNT; i++)
         {
@@ -89,10 +90,23 @@ void handler(Event *e)
             probes[i].highAlarm = 500.0;
             probes[i].arm = false;
             pinMode((uint8_t)probes[i].pin, INPUT);
-            dispatch(new ProbeEvent(&probes[i], ProbeEvent::Action::FIELD_CHANGE));
+            dispatch(new ProbeEvent(probes[i], ProbeEvent::Action::FIELD_CHANGE));
         }
     default:;
     }
+}
+
+void readInternalTemp()
+{
+    int16_t last = internalTemp;
+
+    int temp = adc->analogRead((uint8_t)Pin::INT_TEMP);
+    float intmv = (3300.0 / pow(2, ADC_BITS)) * float(temp);
+    float tempC = (intmv - 500.0) / 10.0;
+    internalTemp = (int16_t)(tempC * 1.8 + 32);
+
+    if (internalTemp != last)
+        dispatch(new InternalTempEvent(internalTemp));
 }
 
 /*void handler(Event *e)
@@ -143,7 +157,7 @@ void Probe::read()
         connected = false;
         temperature = 0;
         if (oldConn)
-            dispatch(new ProbeEvent(this, ProbeEvent::Action::DISCONNECT));
+            dispatch(new ProbeEvent(*this, ProbeEvent::Action::DISCONNECT));
 
         return;
     }
@@ -153,11 +167,11 @@ void Probe::read()
     connected = true;
     temperature = temp;
     if (!oldConn)
-        dispatch(new ProbeEvent(this, ProbeEvent::Action::CONNECT));
+        dispatch(new ProbeEvent(*this, ProbeEvent::Action::CONNECT));
 
     if (temperature != oldTemp)
     {
-        dispatch(new ProbeEvent(this, ProbeEvent::Action::TEMP_CHANGE));
+        dispatch(new ProbeEvent(*this, ProbeEvent::Action::TEMP_CHANGE));
         if (arm)
         {
             if (temperature < highAlarm - 1.0 && temperature > lowAlarm + 1.0)
@@ -165,7 +179,7 @@ void Probe::read()
 
             else if (temperature > highAlarm || temperature < lowAlarm)
             {
-                dispatch(new ProbeEvent(this, ProbeEvent::Action::ALARM));
+                dispatch(new ProbeEvent(*this, ProbeEvent::Action::ALARM));
                 arm = false;
             }
         }
@@ -219,6 +233,7 @@ void probeSetup()
     adc->setConversionSpeed(ADC_CONVERSION_SPEED::VERY_LOW_SPEED);
 
     pinMode((uint8_t)Pin::PROBE_POWER, OUTPUT);
+    pinMode((uint8_t)Pin::INT_TEMP, INPUT);
 
     for (uint8_t i = 0; i < (uint8_t)Probe::ID::COUNT; i++)
     {
@@ -245,6 +260,7 @@ void probeLoop(uint32_t ts)
             if (int32_t(ts) - int32_t(poweredOnTime) > int32_t(PROBES_POWERON_DELAY))
             {
                 lastReadTime = readProbes();
+                readInternalTemp();
                 powerOffProbes();
             }
         }
@@ -265,6 +281,12 @@ void ProbeEvent::log(Stream &s)
     };
 
     Event::prelog(s);
-    s.printf("TYPE: PROBE; PROBE: %s; CONN: %d\n", probes[(uint8_t)probe->id], probe->connected);
+    s.printf("TYPE: PROBE; PROBE: %s; CONN: %d\n", probes[(uint8_t)probe.id], probe.connected);
+}
+
+void InternalTempEvent::log(Stream &s)
+{
+    Event::prelog(s);
+    s.printf("TYPE: INTERNAL TEMP; TEMPERATURE: %dF\n", temp);
 }
 #endif // DEBUG

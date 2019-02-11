@@ -11,16 +11,16 @@ bool booting = false;
 uint32_t bootTime = 0;
 RunMode nextMode = RunMode::NORMAL;
 
-void handler(Event *e)
+void handler(Event &e)
 {
-    switch (e->type)
+    switch (e.type)
     {
     case Event::Type::RESET:
     {
-        ResetEvent *re = (ResetEvent *)e;
+        ResetEvent &re = (ResetEvent &)e;
         booting = true;
-        bootTime = re->ts;
-        nextMode = re->mode;
+        bootTime = re.ts;
+        nextMode = re.mode;
         dispatch(new ModeEvent(RunMode::BOOT));
         break;
     }

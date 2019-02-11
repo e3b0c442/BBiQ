@@ -28,20 +28,20 @@ void logo() // because why not
     Serial.println("BBiQ v0.1 - 2019-02-03");
 }
 
-void handler(Event *e)
+void handler(Event &e)
 {
 #ifdef DEBUG
-    e->log(Serial);
+    e.log(Serial);
 #endif // DEBUG
 
-    switch (e->type)
+    switch (e.type)
     {
     case Event::Type::MODE:
     {
-        ModeEvent *me = (ModeEvent *)e;
-        currentMode = me->mode;
+        ModeEvent &me = (ModeEvent &)e;
+        currentMode = me.mode;
 
-        switch (me->mode)
+        switch (me.mode)
         {
         case RunMode::BOOT:
             logo();
@@ -80,6 +80,7 @@ void serialSetup()
     registerHandler(Event::Type::BUTTON, &handler);
     registerHandler(Event::Type::RESET, &handler);
     registerHandler(Event::Type::PROBE, &handler);
+    registerHandler(Event::Type::INT_TEMP, &handler);
 #endif
 }
 

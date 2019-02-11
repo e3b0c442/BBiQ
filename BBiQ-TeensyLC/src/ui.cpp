@@ -20,16 +20,16 @@ ButtonState lastButtons = ButtonState::ALL_UP;
 uint32_t lastBoot = 0;
 Probe *selected = NULL;
 
-void handler(Event *e)
+void handler(Event &e)
 {
-    switch (e->type)
+    switch (e.type)
     {
     case Event::Type::BUTTON:
     {
-        ButtonEvent *be = (ButtonEvent *)e;
-        lastInteraction = e->ts;
+        ButtonEvent &be = (ButtonEvent &)e;
+        lastInteraction = e.ts;
         ButtonState old = lastButtons;
-        lastButtons = be->state;
+        lastButtons = be.state;
 
         if (powerSave)
         {
@@ -40,7 +40,7 @@ void handler(Event *e)
 
         if (old == ButtonState::ALL_UP)
         {
-            switch (be->state)
+            switch (be.state)
             {
             case ButtonState::ONE_DOWN:
             {
@@ -76,11 +76,11 @@ void handler(Event *e)
     case Event::Type::MODE:
     {
         Screen sc = screen;
-        ModeEvent *me = (ModeEvent *)e;
-        switch (me->mode)
+        ModeEvent &me = (ModeEvent &)e;
+        switch (me.mode)
         {
         case RunMode::BOOT:
-            lastBoot = e->ts;
+            lastBoot = e.ts;
             screen = Screen::SPLASH;
             sc = Screen::COUNT;
             dispatch(new UIEvent(Screen::SPLASH, powerSave, selected));
@@ -93,7 +93,7 @@ void handler(Event *e)
             break;
         }
 
-        if ((int32_t)e->ts - (int32_t)lastBoot < (int32_t)DISPLAY_SPLASH_TIME)
+        if ((int32_t)e.ts - (int32_t)lastBoot < (int32_t)DISPLAY_SPLASH_TIME)
             nextScreen = sc;
         else
         {
@@ -104,14 +104,14 @@ void handler(Event *e)
     }
     case Event::Type::PROBE:
     {
-        ProbeEvent *pe = (ProbeEvent *)e;
-        if (selected == NULL && pe->probe->connected)
-            selected = pe->probe;
+        ProbeEvent &pe = (ProbeEvent &)e;
+        if (selected == NULL && pe.probe.connected)
+            selected = &pe.probe;
 
-        if (selected == pe->probe)
+        if (selected == &pe.probe)
         {
-            if (!pe->probe->connected)
-                selected = pe->probe->next();
+            if (!pe.probe.connected)
+                selected = pe.probe.next();
 
             dispatch(new UIEvent(screen, powerSave, selected));
         }

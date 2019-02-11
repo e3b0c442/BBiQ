@@ -36,7 +36,7 @@ void dispatch(Event *e)
     HandlerMap *map = &eventHandlers[(uint8_t)e->type];
     for (uint8_t i = 0; i < map->count; i++)
     {
-        map->handlers[i](e);
+        map->handlers[i](*e);
     }
     delete e;
 }

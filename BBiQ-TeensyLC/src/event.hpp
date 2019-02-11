@@ -11,6 +11,7 @@ struct Event
         MODE,
         BUTTON,
         PROBE,
+        INT_TEMP,
         UI,
         UART,
         COUNT
@@ -27,7 +28,7 @@ struct Event
 #endif // DEBUG
 };
 
-typedef void (*EventHandler)(Event *e);
+typedef void (*EventHandler)(Event &e);
 
 void eventSetup();
 void registerHandler(Event::Type type, EventHandler handler);
